@@ -1,4 +1,6 @@
 package GUI;
 
-public class PanelReservas {
+import javax.swing.*;
+
+public class PanelReservas extends JPanel {
 }
