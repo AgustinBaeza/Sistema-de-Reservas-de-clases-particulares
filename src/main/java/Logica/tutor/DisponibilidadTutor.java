@@ -1,26 +1,28 @@
 package Logica.tutor;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class DisponibilidadTutor {
 
-    private String dia;
-    private String horaInicio;
-    private String horaFin;
+    private LocalDate dia;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
 
-    public DisponibilidadTutor(String dia, String horaInicio, String horaFin) {
+    public DisponibilidadTutor(LocalDate dia, LocalTime horaInicio, LocalTime horaFin) {
         this.dia = dia;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
     }
 
-    public String getDia() {
+    public LocalDate getDia() {
         return dia;
     }
 
-    public String getHoraInicio() {
+    public LocalTime getHoraInicio() {
         return horaInicio;
     }
 
-    public String getHoraFin() {
+    public LocalTime getHoraFin() {
         return horaFin;
     }
 

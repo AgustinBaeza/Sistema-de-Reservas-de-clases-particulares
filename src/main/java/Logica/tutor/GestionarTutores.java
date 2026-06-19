@@ -1,5 +1,7 @@
 package Logica.tutor;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class GestionarTutores {
@@ -38,7 +40,7 @@ public class GestionarTutores {
         return true;
     }
 
-    public boolean definirDisponibilidadTutor(String nombreTutor, String dia, String horaInicio, String horaFin) {
+    public boolean definirDisponibilidadTutor(String nombreTutor, LocalDate dia, LocalTime horaInicio, LocalTime horaFin) {
         Tutor tutor = buscarTutorPorNombre(nombreTutor);
 
         if (tutor == null) {
