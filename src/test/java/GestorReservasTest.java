@@ -21,13 +21,13 @@ class GestorReservasTest {
 
     @BeforeEach
     void setUp() {
-        tutor = new Tutor("Pedro", "pedro@gmail.com", "123456789");
+        tutor = new Tutor(102,"Pedro", "pedro@gmail.com", "123456789");
         materia = new MateriaTutor("CalculoIII", 15000, 3);
         tutor.agregarMateria(materia);
         tutor.agregarDisponibilidad(
                 new DisponibilidadTutor(LocalDate.of(2026, 6, 19),
                     LocalTime.of(14, 0), LocalTime.of(18, 0)) );
-        estudiante = new Estudiante("Juan", "juan@gmail.com", "987654321");
+        estudiante = new Estudiante(201,"Juan", "juan@gmail.com", "987654321");
         fecha = LocalDate.of(2026, 6, 19);
     }
 

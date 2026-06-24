@@ -9,14 +9,16 @@ public class GestionarEstudiantes {
     public GestionarEstudiantes() {
         this.estudiantes = new ArrayList<>();
     }
+    private int siguienteId = 1;
 
-    public void crearPerfilEstudiante(String nombre, String correo, String telefono) {
-        Estudiante estudiante = new Estudiante(nombre, correo, telefono);
+    public void crearPerfilEstudiante(int id, String nombre, String correo, String telefono) {
+        Estudiante estudiante = new Estudiante(siguienteId, nombre, correo, telefono);
+        siguienteId++;
         estudiantes.add(estudiante);
     }
 
-    public boolean editarPerfilEstudiante(String nombreActual, String nuevoNombre, String nuevoCorreo, String nuevoTelefono) {
-        Estudiante estudiante = buscarEstudiantePorNombre(nombreActual);
+    public boolean editarPerfilEstudiante(int id, String nuevoNombre, String nuevoCorreo, String nuevoTelefono) {
+        Estudiante estudiante = buscarEstudiantePorID(id);
 
         if (estudiante == null) {
             return false;
@@ -26,9 +28,9 @@ public class GestionarEstudiantes {
         return true;
     }
 
-    public Estudiante buscarEstudiantePorNombre(String nombre) {
+    public Estudiante buscarEstudiantePorID(int id) {
         for (Estudiante estudiante : estudiantes) {
-            if (estudiante.getNombre().equalsIgnoreCase(nombre)) {
+            if (estudiante.getId() == id) {
                 return estudiante;
             }
         }

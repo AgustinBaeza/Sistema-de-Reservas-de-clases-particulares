@@ -12,8 +12,8 @@ public class GestionarTutores {
         this.tutores = new ArrayList<>();
     }
 
-    public void crearPerfilTutor(String nombre, String correo, String telefono) {
-        Tutor tutor = new Tutor(nombre, correo, telefono);
+    public void crearPerfilTutor(int id, String nombre, String correo, String telefono) {
+        Tutor tutor = new Tutor(id, nombre, correo, telefono);
         tutores.add(tutor);
     }
 

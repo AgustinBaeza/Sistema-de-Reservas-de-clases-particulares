@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 public class Tutor {
 
+    private int id;
     private String nombre;
     private String correo;
     private String telefono;
     private ArrayList<MateriaTutor> materias;
     private ArrayList<DisponibilidadTutor> disponibilidades;
 
-    public Tutor(String nombre, String correo, String telefono) {
+    public Tutor(int id, String nombre, String correo, String telefono) {
+        this.id = id;
         this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
@@ -30,6 +32,10 @@ public class Tutor {
         this.nombre = nombre;
         this.correo = correo;
         this.telefono = telefono;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNombre() {
