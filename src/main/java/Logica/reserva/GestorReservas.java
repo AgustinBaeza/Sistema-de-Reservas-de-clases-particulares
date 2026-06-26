@@ -35,6 +35,36 @@ public class GestorReservas {
         return reserva;
     }
 
+    /**
+     * Metodo que modifica una reserva existente, validando su estado actual y la disponibilidad del nuevo tutor.
+     * @param reserva reserva a modificar
+     * @param nuevoTutor nuevo tutor a asignar
+     * @param nuevaMateria nueva materia a asignar
+     * @param nuevoEstudiante nuevo estudiante a asignar
+     * @param nuevaFecha nueva fecha de la clase
+     * @param nuevoHoraInicio nuevo horario de inicio
+     * @param nuevoHoraFin nuevo horario de termino
+     * @throws AccionEstadoInvalida si la reserva esta cancelada
+     * @throws ConflictoHorarioException si el tutor no tiene disponibilidad o ya tiene una reserva en ese horario
+     */
+    public void modificarReserva(Reserva reserva, Tutor nuevoTutor, MateriaTutor nuevaMateria,
+                                 Estudiante nuevoEstudiante, LocalDate nuevaFecha,
+                                 LocalTime nuevoHoraInicio, LocalTime nuevoHoraFin)
+            throws ConflictoHorarioException {
+
+        reserva.validarModificacion();
+
+        if (!buscador.tutorDisponible(nuevoTutor, nuevaFecha, nuevoHoraInicio, nuevoHoraFin)) {
+            throw new ConflictoHorarioException("El tutor no tiene disponibilidad en ese horario.");
+        }
+
+        if (buscador.hayConflictoHorario(nuevoTutor, reservas, nuevaFecha, nuevoHoraInicio, nuevoHoraFin)) {
+            throw new ConflictoHorarioException("El tutor ya tiene una reserva en ese horario.");
+        }
+
+        reserva.actualizarDetalles(nuevoTutor, nuevaMateria, nuevoEstudiante, nuevaFecha, nuevoHoraInicio, nuevoHoraFin);
+    }
+
     public void cancelarReserva(Reserva reserva){
         reserva.cancelarReserva();
     }

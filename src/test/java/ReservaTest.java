@@ -4,6 +4,7 @@ import Logica.estudiante.Estudiante;
 import Logica.excepciones.AccionEstadoInvalida;
 import Logica.tutor.MateriaTutor;
 import Logica.tutor.Tutor;
+import Logica.tutor.TutorBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +33,10 @@ class ReservaTest {
 
     @BeforeEach
     void setUp() {
-        Tutor tutor = new Tutor(101,"Jonathan", "jbriones@udec.cl", "123456789");
-        Estudiante estudiante = new Estudiante(201,"Javier", "jvidal@udec.cl", "987654321");
+        Tutor tutor = new TutorBuilder()
+                .conDatosBasicos(101, "Jonathan", "jbriones@udec.cl", "123456789")
+                .build();
+        Estudiante estudiante = new Estudiante(201, "Javier", "jvidal@udec.cl", "987654321");
         MateriaTutor materia = new MateriaTutor("Calculo III", 15000, 3);
 
         reserva = new Reserva(tutor, estudiante, materia, LocalDate.of(2026, 6, 15),

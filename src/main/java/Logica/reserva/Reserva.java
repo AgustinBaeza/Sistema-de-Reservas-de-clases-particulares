@@ -78,14 +78,16 @@ public class Reserva {
      * Metodo que permite actualizar el estado de una reserva tras una modificacion ya validada segun su estado.
      * @param nuevoTutor tutor nuevo a asignar a la reserva
      * @param nuevaMateria materia nueva a asignar a la reserva
+     * @poram nuevoEstudiante estudiante nuevo a asignar a la reserva
      * @param nuevaFecha fecha nueva a asignar a la reserva
      * @param nuevoHoraInicio horario de inicio a asignar a la reserva
      * @param nuevoHoraFin horario de finalizacion a asignar a la reserva
      */
-    public void actualizarDetalles(Tutor nuevoTutor, MateriaTutor nuevaMateria, LocalDate nuevaFecha,
-                                   LocalTime nuevoHoraInicio, LocalTime nuevoHoraFin){
+    public void actualizarDetalles(Tutor nuevoTutor, MateriaTutor nuevaMateria, Estudiante nuevoEstudiante,
+                                       LocalDate nuevaFecha, LocalTime nuevoHoraInicio, LocalTime nuevoHoraFin) {
         this.tutor = nuevoTutor;
         this.materiaTutor = nuevaMateria;
+        this.estudiante = nuevoEstudiante;
         this.fecha = nuevaFecha;
         this.horaInicio = nuevoHoraInicio;
         this.horaFin = nuevoHoraFin;

@@ -9,9 +9,9 @@ public class GestionarEstudiantes {
     public GestionarEstudiantes() {
         this.estudiantes = new ArrayList<>();
     }
-    private int siguienteId = 1;
+    private int siguienteId = 500;
 
-    public void crearPerfilEstudiante(int id, String nombre, String correo, String telefono) {
+    public void crearPerfilEstudiante(String nombre, String correo, String telefono) {
         Estudiante estudiante = new Estudiante(siguienteId, nombre, correo, telefono);
         siguienteId++;
         estudiantes.add(estudiante);
