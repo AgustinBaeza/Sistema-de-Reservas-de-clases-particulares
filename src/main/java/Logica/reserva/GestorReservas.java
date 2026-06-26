@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public class GestorReservas {
     private ArrayList<Reserva> reservas;
-    private BuscadorDiponibilidad buscador;
+    private BuscadorDisponibilidad buscador;
 
-    public GestorReservas( BuscadorDiponibilidad buscador ) {
+    public GestorReservas( BuscadorDisponibilidad buscador ) {
         this.reservas = new ArrayList<>();
         this.buscador = buscador;
     }
