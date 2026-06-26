@@ -1,6 +1,8 @@
 package Logica.tutor;
 
 import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * Clase que representa a un tutor encargado de impartir clases particulares
@@ -131,4 +133,48 @@ public class Tutor {
     public String toString() {
         return nombre + " / " + correo;
     }
+
+    /**
+     * Metodo que edita una materia ya asociada al tutor
+     * @param nombreActual nombre actual de la materia
+     * @param nuevoNombre nuevo nombre de la materia
+     * @param nuevaTarifa nueva tarifa de la materia
+     * @param nuevoCupoMaximo nuevo cupo maximo de la materia
+     * @return true si la materia fue encontrada y editada o false en caso contrario
+     */
+    public boolean editarMateria(String nombreActual, String nuevoNombre, int nuevaTarifa, int nuevoCupoMaximo) {
+        MateriaTutor materia = buscarMateria(nombreActual);
+
+        if (materia == null) {
+            return false;
+        }
+
+        materia.setNombreMateria(nuevoNombre);
+        materia.setTarifa(nuevaTarifa);
+        materia.setCupoMaximo(nuevoCupoMaximo);
+        return true;
+    }
+
+    /**
+     * Metodo que edita un bloque de disponibilidad del tutor segun su posicion en la lista
+     * @param indice indice del bloque de disponibilidad a editar
+     * @param nuevoDia nuevo dia disponible
+     * @param nuevaHoraInicio nueva hora de inicio
+     * @param nuevaHoraFin nueva hora de termino
+     * @return true si la disponibilidad fue editada o false si el indice no existe
+     */
+    public boolean editarDisponibilidad(int indice, LocalDate nuevoDia, LocalTime nuevaHoraInicio, LocalTime nuevaHoraFin) {
+        if (indice < 0 || indice >= disponibilidades.size()) {
+            return false;
+        }
+
+        if (!nuevaHoraInicio.isBefore(nuevaHoraFin)) {
+            return false;
+        }
+
+        DisponibilidadTutor nuevaDisponibilidad = new DisponibilidadTutor(nuevoDia, nuevaHoraInicio, nuevaHoraFin);
+        disponibilidades.set(indice, nuevaDisponibilidad);
+        return true;
+    }
+
 }

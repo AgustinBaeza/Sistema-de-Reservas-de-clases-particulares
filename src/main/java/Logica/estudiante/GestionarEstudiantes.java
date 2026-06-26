@@ -11,10 +11,11 @@ public class GestionarEstudiantes {
     }
     private int siguienteId = 500;
 
-    public void crearPerfilEstudiante(String nombre, String correo, String telefono) {
+    public Estudiante crearPerfilEstudiante(String nombre, String correo, String telefono) {
         Estudiante estudiante = new Estudiante(siguienteId, nombre, correo, telefono);
         siguienteId++;
         estudiantes.add(estudiante);
+        return estudiante;
     }
 
     public boolean editarPerfilEstudiante(int id, String nuevoNombre, String nuevoCorreo, String nuevoTelefono) {

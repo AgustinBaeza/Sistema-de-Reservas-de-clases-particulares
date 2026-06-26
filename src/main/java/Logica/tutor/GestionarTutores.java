@@ -29,12 +29,14 @@ public class GestionarTutores {
      * @param correo correo de contacto
      * @param telefono telefono de contacto
      */
-    public void crearPerfilTutor(String nombre, String correo, String telefono) {
+    public Tutor crearPerfilTutor(String nombre, String correo, String telefono) {
         Tutor tutor = new TutorBuilder()
                 .conDatosBasicos(siguienteId, nombre, correo, telefono)
                 .build();
         siguienteId++;
         tutores.add(tutor);
+
+        return tutor;
     }
 
     /**
@@ -120,5 +122,83 @@ public class GestionarTutores {
      */
     public ArrayList<Tutor> getTutores() {
         return tutores;
+    }
+
+    /**
+     * Metodo que actualiza la tarifa de una materia asociada a un tutor
+     * @param idTutor identificador del tutor
+     * @param nombreMateria nombre de la materia a modificar
+     * @param nuevaTarifa nueva tarifa de la materia
+     * @return true si se actualizo correctamente o false en caso contrario
+     */
+    public boolean definirTarifaTutor(int idTutor, String nombreMateria, int nuevaTarifa) {
+        Tutor tutor = buscarTutorPorId(idTutor);
+        if (tutor == null) {
+            return false;
+        }
+        MateriaTutor materia = tutor.buscarMateria(nombreMateria);
+        if (materia == null) {
+            return false;
+        }
+        materia.setTarifa(nuevaTarifa);
+        return true;
+    }
+
+    /**
+     * Metodo que actualiza el cupo maximo de una materia asociada a un tutor.
+     * @param idTutor identificador del tutor
+     * @param nombreMateria nombre de la materia a modificar
+     * @param nuevoCupoMaximo nuevo cupo maximo
+     * @return true si se actualizo correctamente o false en caso contrario
+     */
+    public boolean definirCupoMaximoPorMateria(int idTutor, String nombreMateria, int nuevoCupoMaximo) {
+        Tutor tutor = buscarTutorPorId(idTutor);
+        if (tutor == null) {
+            return false;
+        }
+        MateriaTutor materia = tutor.buscarMateria(nombreMateria);
+        if (materia == null) {
+            return false;
+        }
+        materia.setCupoMaximo(nuevoCupoMaximo);
+        return true;
+    }
+
+    /**
+     * Metodo que edita una materia completa asociada a un tutor.
+     * @param idTutor identificador del tutor
+     * @param nombreMateriaActual nombre actual de la materia
+     * @param nuevoNombreMateria nuevo nombre de la materia
+     * @param nuevaTarifa nueva tarifa
+     * @param nuevoCupoMaximo nuevo cupo maximo
+     * @return true si la materia fue editada o false en caso contrario
+     */
+    public boolean editarMateriaTutor(int idTutor, String nombreMateriaActual, String nuevoNombreMateria, int nuevaTarifa, int nuevoCupoMaximo) {
+        Tutor tutor = buscarTutorPorId(idTutor);
+        if (tutor == null) {
+            return false;
+        }
+        MateriaTutor materiaRepetida = tutor.buscarMateria(nuevoNombreMateria);
+        if (materiaRepetida != null && !nombreMateriaActual.equalsIgnoreCase(nuevoNombreMateria)) {
+            return false;
+        }
+        return tutor.editarMateria(nombreMateriaActual, nuevoNombreMateria, nuevaTarifa, nuevoCupoMaximo);
+    }
+
+    /**
+     * Metodo que edita un bloque de disponibilidad horaria de un tutor.
+     * @param idTutor identificador del tutor
+     * @param indiceDisponibilidad posicion de la disponibilidad dentro de la lista
+     * @param nuevoDia nuevo dia disponible
+     * @param nuevaHoraInicio nueva hora de inicio
+     * @param nuevaHoraFin nueva hora de termino
+     * @return true si se edito correctamente o false en caso contrario
+     */
+    public boolean editarDisponibilidadTutor(int idTutor, int indiceDisponibilidad, LocalDate nuevoDia, LocalTime nuevaHoraInicio, LocalTime nuevaHoraFin) {
+        Tutor tutor = buscarTutorPorId(idTutor);
+        if (tutor == null) {
+            return false;
+        }
+        return tutor.editarDisponibilidad(indiceDisponibilidad, nuevoDia, nuevaHoraInicio, nuevaHoraFin);
     }
 }
