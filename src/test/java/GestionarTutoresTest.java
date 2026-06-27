@@ -2,21 +2,17 @@ import Logica.tutor.GestionarTutores;
 import Logica.tutor.Tutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Clase dedicada a tests unitarios respecto a la gestion de tutores
  * Se prueba:
- * - Creacion de perfiles de tutor
- * - Edicion de datos principales del tutor
- * - Busqueda de tutores por ID
- * - Definicion de materias del tutor
- * - Definicion de disponibilidad horaria del tutor
- * - Casos invalidos, como tutores inexistentes o materias duplicadas
+ * - Creacion, edicion y busqueda de tutores
+ * - Definicion y edicion de materias, tarifas y cupos
+ * - Definicion y edicion de disponibilidad horaria
+ * - Casos invalidos principales
  */
 class GestionarTutoresTest {
 
@@ -27,214 +23,180 @@ class GestionarTutoresTest {
         gestionarTutores = new GestionarTutores();
     }
 
+    private Tutor crearTutorAlan() {
+        return gestionarTutores.crearPerfilTutor("Alan", "alan@gmail.com", "111111111");
+    }
+
+    private void agregarMateriaCalculo3(int idTutor) {
+        gestionarTutores.definirMateriaTutor( idTutor, "Calculo 3", 15000, 3);
+    }
+
+    private void agregarDisponibilidadBase(int idTutor) {
+        gestionarTutores.definirDisponibilidadTutor(idTutor, LocalDate.of(2026, 6, 25), LocalTime.of(10, 0), LocalTime.of(12, 0));
+    }
+
     @Test
     void crearPerfilTutorAgregaTutorCorrectamente() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
-
-        Tutor tutor = gestionarTutores.buscarTutorPorId(1);
+        Tutor tutor = crearTutorAlan();
 
         assertEquals(1, gestionarTutores.getTutores().size());
-        assertNotNull(tutor);
         assertEquals(1, tutor.getId());
-        assertEquals("Pedro", tutor.getNombre());
-        assertEquals("pedro@gmail.com", tutor.getCorreo());
-        assertEquals("123456789", tutor.getTelefono());
-    }
-
-    @Test
-    void crearDosPerfilesTutorAsignaIdsDistintos() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
-
-        gestionarTutores.crearPerfilTutor(
-                "Maria",
-                "maria@gmail.com",
-                "987654321"
-        );
-
-        Tutor tutor1 = gestionarTutores.buscarTutorPorId(1);
-        Tutor tutor2 = gestionarTutores.buscarTutorPorId(2);
-
-        assertEquals(2, gestionarTutores.getTutores().size());
-        assertNotNull(tutor1);
-        assertNotNull(tutor2);
-        assertNotEquals(tutor1.getId(), tutor2.getId());
-        assertEquals("Pedro", tutor1.getNombre());
-        assertEquals("Maria", tutor2.getNombre());
-    }
-
-    @Test
-    void editarPerfilTutorExistenteRetornaTrueYActualizaDatos() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
-
-        boolean resultado = gestionarTutores.editarPerfilTutor(
-                1,
-                "Pedro Actualizado",
-                "pedroactualizado@gmail.com",
-                "111111111"
-        );
-
-        Tutor tutor = gestionarTutores.buscarTutorPorId(1);
-
-        assertTrue(resultado);
-        assertNotNull(tutor);
-        assertEquals("Pedro Actualizado", tutor.getNombre());
-        assertEquals("pedroactualizado@gmail.com", tutor.getCorreo());
+        assertEquals("Alan", tutor.getNombre());
+        assertEquals("alan@gmail.com", tutor.getCorreo());
         assertEquals("111111111", tutor.getTelefono());
     }
 
     @Test
-    void editarPerfilTutorInexistenteRetornaFalse() {
-        boolean resultado = gestionarTutores.editarPerfilTutor(
-                999,
-                "Tutor Inexistente",
-                "correo@gmail.com",
-                "000000000"
-        );
+    void crearDosTutoresAsignaIdsDistintos() {
+        Tutor tutor1 = crearTutorAlan();
 
-        assertFalse(resultado);
+        Tutor tutor2 = gestionarTutores.crearPerfilTutor("Alex", "alex@gmail.com", "222222222");
+
+        assertEquals(2, gestionarTutores.getTutores().size());
+        assertNotEquals(tutor1.getId(), tutor2.getId());
+        assertEquals(1, tutor1.getId());
+        assertEquals(2, tutor2.getId());
     }
 
     @Test
-    void buscarTutorPorIdExistenteRetornaTutor() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
+    void editarPerfilTutorExistenteActualizaDatos() {
+        Tutor tutor = crearTutorAlan();
 
-        Tutor tutor = gestionarTutores.buscarTutorPorId(1);
+        boolean resultado = gestionarTutores.editarPerfilTutor(tutor.getId(), "Valentina", "valentina@gmail.com", "333333333");
 
-        assertNotNull(tutor);
-        assertEquals("Pedro", tutor.getNombre());
-        assertEquals("pedro@gmail.com", tutor.getCorreo());
+        assertTrue(resultado);
+        assertEquals("Valentina", tutor.getNombre());
+        assertEquals("valentina@gmail.com", tutor.getCorreo());
+        assertEquals("333333333", tutor.getTelefono());
     }
 
     @Test
-    void buscarTutorPorIdInexistenteRetornaNull() {
-        Tutor tutor = gestionarTutores.buscarTutorPorId(999);
+    void buscarTutorPorIdRetornaTutorONull() {
+        Tutor tutor = crearTutorAlan();
 
-        assertNull(tutor);
+        assertNotNull(gestionarTutores.buscarTutorPorId(tutor.getId()));
+        assertEquals("Alan", gestionarTutores.buscarTutorPorId(tutor.getId()).getNombre());
+        assertNull(gestionarTutores.buscarTutorPorId(999));
     }
 
     @Test
     void definirMateriaTutorAgregaMateriaCorrectamente() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
+        Tutor tutor = crearTutorAlan();
 
-        boolean resultado = gestionarTutores.definirMateriaTutor(
-                1,
-                "Calculo II",
-                15000,
-                3
-        );
-
-        Tutor tutor = gestionarTutores.buscarTutorPorId(1);
+        boolean resultado = gestionarTutores.definirMateriaTutor(tutor.getId(), "Calculo 3", 15000, 3);
 
         assertTrue(resultado);
-        assertNotNull(tutor);
         assertEquals(1, tutor.getMaterias().size());
-        assertEquals("Calculo II", tutor.getMaterias().get(0).getNombreMateria());
+        assertEquals("Calculo 3", tutor.getMaterias().get(0).getNombreMateria());
         assertEquals(15000, tutor.getMaterias().get(0).getTarifa());
         assertEquals(3, tutor.getMaterias().get(0).getCupoMaximo());
     }
 
     @Test
-    void definirMateriaTutorDuplicadaRetornaFalse() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
+    void definirMateriaTutorConDatosInvalidosRetornaFalse() {
+        Tutor tutor = crearTutorAlan();
+        agregarMateriaCalculo3(tutor.getId());
 
-        boolean primeraMateria = gestionarTutores.definirMateriaTutor(
-                1,
-                "Calculo II",
-                15000,
-                3
-        );
-
-        boolean materiaDuplicada = gestionarTutores.definirMateriaTutor(
-                1,
-                "Calculo II",
-                18000,
-                5
-        );
-
-        Tutor tutor = gestionarTutores.buscarTutorPorId(1);
-
-        assertTrue(primeraMateria);
-        assertFalse(materiaDuplicada);
-        assertNotNull(tutor);
-        assertEquals(1, tutor.getMaterias().size());
-        assertEquals(15000, tutor.getMaterias().get(0).getTarifa());
-        assertEquals(3, tutor.getMaterias().get(0).getCupoMaximo());
-    }
-
-    @Test
-    void definirMateriaTutorInexistenteRetornaFalse() {
-        boolean resultado = gestionarTutores.definirMateriaTutor(
-                999,
-                "Calculo II",
-                15000,
-                3
-        );
-
-        assertFalse(resultado);
+        assertFalse(gestionarTutores.definirMateriaTutor(tutor.getId(), "Calculo 3", 18000, 5));
+        assertFalse(gestionarTutores.definirMateriaTutor(tutor.getId(), "", 15000, 3));
+        assertFalse(gestionarTutores.definirMateriaTutor(tutor.getId(), "Logica", -1000, 3));
+        assertFalse(gestionarTutores.definirMateriaTutor(999, "Logica", 15000, 3));
     }
 
     @Test
     void definirDisponibilidadTutorAgregaBloqueCorrectamente() {
-        gestionarTutores.crearPerfilTutor(
-                "Pedro",
-                "pedro@gmail.com",
-                "123456789"
-        );
-
+        Tutor tutor = crearTutorAlan();
         LocalDate dia = LocalDate.of(2026, 6, 25);
-        LocalTime horaInicio = LocalTime.of(10, 0);
-        LocalTime horaFin = LocalTime.of(12, 0);
+        LocalTime inicio = LocalTime.of(10, 0);
+        LocalTime fin = LocalTime.of(12, 0);
 
-        boolean resultado = gestionarTutores.definirDisponibilidadTutor(
-                1,
-                dia,
-                horaInicio,
-                horaFin
-        );
-
-        Tutor tutor = gestionarTutores.buscarTutorPorId(1);
+        boolean resultado = gestionarTutores.definirDisponibilidadTutor(tutor.getId(), dia, inicio, fin);
 
         assertTrue(resultado);
-        assertNotNull(tutor);
         assertEquals(1, tutor.getDisponibilidades().size());
         assertEquals(dia, tutor.getDisponibilidades().get(0).getDia());
-        assertEquals(horaInicio, tutor.getDisponibilidades().get(0).getHoraInicio());
-        assertEquals(horaFin, tutor.getDisponibilidades().get(0).getHoraFin());
+        assertEquals(inicio, tutor.getDisponibilidades().get(0).getHoraInicio());
+        assertEquals(fin, tutor.getDisponibilidades().get(0).getHoraFin());
     }
 
     @Test
-    void definirDisponibilidadTutorInexistenteRetornaFalse() {
-        boolean resultado = gestionarTutores.definirDisponibilidadTutor(
-                999,
-                LocalDate.of(2026, 6, 25),
-                LocalTime.of(10, 0),
-                LocalTime.of(12, 0)
-        );
+    void definirDisponibilidadTutorConDatosInvalidosRetornaFalse() {
+        Tutor tutor = crearTutorAlan();
+        assertFalse(gestionarTutores.definirDisponibilidadTutor(999, LocalDate.of(2026, 6, 25), LocalTime.of(10, 0), LocalTime.of(12, 0)));
+        assertFalse(gestionarTutores.definirDisponibilidadTutor(tutor.getId(), LocalDate.of(2026, 6, 25), LocalTime.of(12, 0), LocalTime.of(10, 0)));
+    }
+
+    @Test
+    void definirTarifaYCupoActualizaMateriaCorrectamente() {
+        Tutor tutor = crearTutorAlan();
+        agregarMateriaCalculo3(tutor.getId());
+
+        boolean tarifaActualizada = gestionarTutores.definirTarifaTutor(tutor.getId(), "Calculo 3", 18000);
+        boolean cupoActualizado = gestionarTutores.definirCupoMaximoPorMateria(tutor.getId(), "Calculo 3", 6);
+
+        assertTrue(tarifaActualizada);
+        assertTrue(cupoActualizado);
+        assertEquals(18000, tutor.buscarMateria("Calculo 3").getTarifa());
+        assertEquals(6, tutor.buscarMateria("Calculo 3").getCupoMaximo());
+    }
+
+    @Test
+    void editarMateriaTutorActualizaDatosCorrectamente() {
+        Tutor tutor = crearTutorAlan();
+        agregarMateriaCalculo3(tutor.getId());
+
+        boolean resultado = gestionarTutores.editarMateriaTutor(tutor.getId(), "Calculo 3", "Desarrollo Orientado a Objetos", 20000, 4);
+
+        assertTrue(resultado);
+        assertNull(tutor.buscarMateria("Calculo 3"));
+        assertNotNull(tutor.buscarMateria("Desarrollo Orientado a Objetos"));
+        assertEquals(20000, tutor.buscarMateria("Desarrollo Orientado a Objetos").getTarifa());
+        assertEquals(4, tutor.buscarMateria("Desarrollo Orientado a Objetos").getCupoMaximo());
+    }
+
+    @Test
+    void editarMateriaTutorConNombreDuplicadoRetornaFalse() {
+        Tutor tutor = crearTutorAlan();
+
+        gestionarTutores.definirMateriaTutor(tutor.getId(), "Calculo 3", 15000, 3);
+        gestionarTutores.definirMateriaTutor(tutor.getId(), "Logica", 12000, 4);
+
+        boolean resultado = gestionarTutores.editarMateriaTutor(tutor.getId(), "Calculo 3", "Logica", 18000, 5);
 
         assertFalse(resultado);
+        assertNotNull(tutor.buscarMateria("Calculo 3"));
+        assertNotNull(tutor.buscarMateria("Logica"));
+    }
+
+    @Test
+    void editarDisponibilidadTutorActualizaBloqueCorrectamente() {
+        Tutor tutor = crearTutorAlan();
+        agregarDisponibilidadBase(tutor.getId());
+
+        boolean resultado = gestionarTutores.editarDisponibilidadTutor(tutor.getId(), 0, LocalDate.of(2026, 6, 26), LocalTime.of(14, 0), LocalTime.of(16, 0));
+
+        assertTrue(resultado);
+        assertEquals(LocalDate.of(2026, 6, 26), tutor.getDisponibilidades().get(0).getDia());
+        assertEquals(LocalTime.of(14, 0), tutor.getDisponibilidades().get(0).getHoraInicio());
+        assertEquals(LocalTime.of(16, 0), tutor.getDisponibilidades().get(0).getHoraFin());
+    }
+
+    @Test
+    void editarDisponibilidadTutorConIndiceInvalidoRetornaFalse() {
+        Tutor tutor = crearTutorAlan();
+        agregarDisponibilidadBase(tutor.getId());
+
+        boolean resultado = gestionarTutores.editarDisponibilidadTutor(tutor.getId(), 5, LocalDate.of(2026, 6, 26), LocalTime.of(14, 0), LocalTime.of(16, 0));
+
+        assertFalse(resultado);
+    }
+
+    @Test
+    void operacionesConTutorInexistenteRetornanFalse() {
+        assertFalse(gestionarTutores.editarPerfilTutor(999, "Guts", "guts@gmail.com", "444444444"));
+        assertFalse(gestionarTutores.definirTarifaTutor(999, "Calculo 3", 18000));
+        assertFalse(gestionarTutores.definirCupoMaximoPorMateria(999, "Calculo 3", 5));
+        assertFalse(gestionarTutores.editarMateriaTutor(999, "Calculo 3", "Logica", 15000, 3));
+        assertFalse(gestionarTutores.editarDisponibilidadTutor(999, 0, LocalDate.of(2026, 6, 26), LocalTime.of(14, 0), LocalTime.of(16, 0)));
     }
 }
