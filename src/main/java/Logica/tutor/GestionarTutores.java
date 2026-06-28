@@ -225,12 +225,7 @@ public class GestionarTutores {
             return false;
         }
 
-        return tutor.editarMateria(
-                nombreMateriaActual,
-                nuevoNombreMateria,
-                nuevaTarifa,
-                nuevoCupoMaximo
-        );
+        return tutor.editarMateria(nombreMateriaActual, nuevoNombreMateria, nuevaTarifa, nuevoCupoMaximo);
     }
 
     /**
@@ -248,5 +243,28 @@ public class GestionarTutores {
             return false;
         }
         return tutor.editarDisponibilidad(indiceDisponibilidad, nuevoDia, nuevaHoraInicio, nuevaHoraFin);
+    }
+
+    /**
+     * Metodo que busca todos los tutores que imparten una materia especifica
+     * Recorre la lista de tutores registrados y agrega al resultado aquellos
+     * que tengan una materia con el nombre indicado
+     * @param nombreMateria nombre de la materia a buscar
+     * @return ArrayList de Tutor con los tutores que imparten la materia indicada
+     */
+    public ArrayList<Tutor> buscarTutoresPorMateria(String nombreMateria) {
+        ArrayList<Tutor> tutoresEncontrados = new ArrayList<>();
+
+        if (nombreMateria == null || nombreMateria.isBlank()) {
+            return tutoresEncontrados;
+        }
+
+        for (Tutor tutor : tutores) {
+            if (tutor.buscarMateria(nombreMateria) != null) {
+                tutoresEncontrados.add(tutor);
+            }
+        }
+
+        return tutoresEncontrados;
     }
 }

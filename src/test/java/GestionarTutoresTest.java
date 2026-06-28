@@ -4,12 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Clase dedicada a tests unitarios respecto a la gestion de tutores
  * Se prueba:
  * - Creacion, edicion y busqueda de tutores
+ * - Busqueda de tutores por materia
  * - Definicion y edicion de materias, tarifas y cupos
  * - Definicion y edicion de disponibilidad horaria
  * - Casos invalidos principales
@@ -49,7 +51,6 @@ class GestionarTutoresTest {
     @Test
     void crearDosTutoresAsignaIdsDistintos() {
         Tutor tutor1 = crearTutorAlan();
-
         Tutor tutor2 = gestionarTutores.crearPerfilTutor("Alex", "alex@gmail.com", "222222222");
 
         assertEquals(2, gestionarTutores.getTutores().size());
@@ -61,7 +62,6 @@ class GestionarTutoresTest {
     @Test
     void editarPerfilTutorExistenteActualizaDatos() {
         Tutor tutor = crearTutorAlan();
-
         boolean resultado = gestionarTutores.editarPerfilTutor(tutor.getId(), "Valentina", "valentina@gmail.com", "333333333");
 
         assertTrue(resultado);
@@ -198,5 +198,31 @@ class GestionarTutoresTest {
         assertFalse(gestionarTutores.definirCupoMaximoPorMateria(999, "Calculo 3", 5));
         assertFalse(gestionarTutores.editarMateriaTutor(999, "Calculo 3", "Logica", 15000, 3));
         assertFalse(gestionarTutores.editarDisponibilidadTutor(999, 0, LocalDate.of(2026, 6, 26), LocalTime.of(14, 0), LocalTime.of(16, 0)));
+    }
+
+    @Test
+    void buscarTutoresPorMateriaRetornaTutoresCorrectos() {
+        Tutor alan = crearTutorAlan();
+        Tutor alex = gestionarTutores.crearPerfilTutor("Alex", "alex@gmail.com", "222222222");
+        Tutor valentina = gestionarTutores.crearPerfilTutor("Valentina", "valentina@gmail.com", "333333333");
+        gestionarTutores.definirMateriaTutor(alan.getId(), "Calculo 3", 15000, 3);
+        gestionarTutores.definirMateriaTutor(alex.getId(), "Logica", 12000, 4);
+        gestionarTutores.definirMateriaTutor(valentina.getId(), "Calculo 3", 18000, 5);
+        ArrayList<Tutor> resultado = gestionarTutores.buscarTutoresPorMateria("Calculo 3");
+
+        assertEquals(2, resultado.size());
+        assertTrue(resultado.contains(alan));
+        assertTrue(resultado.contains(valentina));
+        assertFalse(resultado.contains(alex));
+    }
+
+    @Test
+    void buscarTutoresPorMateriaInexistenteOVaciaRetornaListaVacia() {
+        Tutor alan = crearTutorAlan();
+        gestionarTutores.definirMateriaTutor(alan.getId(), "DOO", 20000, 4);
+
+        assertTrue(gestionarTutores.buscarTutoresPorMateria("Calculo 3").isEmpty());
+        assertTrue(gestionarTutores.buscarTutoresPorMateria("").isEmpty());
+        assertTrue(gestionarTutores.buscarTutoresPorMateria(null).isEmpty());
     }
 }
