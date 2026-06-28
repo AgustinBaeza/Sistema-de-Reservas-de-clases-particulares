@@ -8,7 +8,13 @@ import Logica.tutor.Tutor;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
+/**
+ * Clase que crea reservas, las modifica, y obtiene datos de ellas,
+ * como su numero de reservas activas, y las listas de tutores y estudiantes
+ * inscritos de forma cronologica
+ */
 public class GestorReservas {
     private ArrayList<Reserva> reservas;
     private BuscadorDisponibilidad buscador;
@@ -69,4 +75,69 @@ public class GestorReservas {
     public ArrayList<Reserva> getReservas() {
         return reservas;
     }
+
+    /**
+     * retorna las reservas no canceladas
+     * @return lista de reservas con estado CONFIRMADA o PENDIENTE
+     */
+    public ArrayList<Reserva> getReservasActivas(){
+        ArrayList<Reserva> activa = new ArrayList<>();
+        for(Reserva r : reservas){
+            if(r.getEstadoReserva() != "CANCELADA"){
+                activa.add(r);
+            }
+        }
+        return activa;
+    }
+
+    /**
+     * retorna reservas de un tutor, ordenadas por fecha y hora
+     * @param tutor cuyas reservas se deben consultar
+     * @return lista de reservas de un tutor ordenadas
+     */
+    public ArrayList<Reserva> getReservasTutor(Tutor tutor){
+        ArrayList<Reserva> resultado = new ArrayList<>();
+        for ( Reserva r : reservas ){
+            if ( r.getTutor().getId() == tutor.getId() ){
+                resultado.add(r);
+            }
+        }
+        resultado.sort(Comparator.comparing(Reserva::getFecha).thenComparing(Reserva::getHoraInicio));
+        return resultado;
+    }
+
+    /**
+     * retorna reservas de un estudiante, ordenadas por fecha y hora
+     * @param estudiante cuyas reservas se deben consultar
+     * @return lista de reservas de un estudiante    ordenadas
+     */
+    public ArrayList<Reserva> getReservasEstudiante(Estudiante estudiante){
+        ArrayList<Reserva> resultado = new ArrayList<>();
+        for ( Reserva r : reservas ){
+            if ( r.getEstudiante().getId() == estudiante.getId() ){
+                resultado.add(r);
+            }
+        }
+        resultado.sort(Comparator.comparing(Reserva::getFecha).thenComparing(Reserva::getHoraInicio));
+        return resultado;
+    }
+
+    /**
+     * cuenta cuantas reservas no canceladas tiene un tutor para una materia
+     * @param tutor cuyas reservas se consultan
+     * @param materiaTutor materia cual se cuenta el cupo ocupado
+     * @return cantidad de reservas no canceladas activas para ese tutor y materia
+     */
+    public int contadorReservasActivas(Tutor tutor, MateriaTutor materiaTutor){
+        int contador = 0;
+        for ( Reserva r : reservas ){
+            if ( r.getTutor().getId() == tutor.getId()
+                 && r.getMateriaTutor().getNombreMateria().equalsIgnoreCase(materiaTutor.getNombreMateria())
+                 && r.getEstadoReserva() != "CANCELADA"){
+                contador++;
+            }
+        }
+        return contador;
+    }
+
 }
