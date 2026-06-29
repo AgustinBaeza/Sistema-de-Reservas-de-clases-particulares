@@ -1,6 +1,7 @@
 package Logica.reserva;
 
 import Logica.tutor.DisponibilidadTutor;
+import Logica.tutor.MateriaTutor;
 import Logica.tutor.Tutor;
 
 import java.time.LocalDate;
@@ -107,4 +108,44 @@ public class BuscadorDisponibilidad {
 
         return flagConflictoHorario;
     }
+
+    /**
+     * Busca tutores compatibles con una solicitud de reseva
+     * @param tutores lista de todos los tutores
+     * @param nombreMateria nombre de la materia solcicitada
+     * @param fecha fecha de la clase
+     * @param horaInicio hora de inicio de la clase
+     * @param horaFin hora de fin de la clase
+     * @param reservasExistentes reservas actuales para ver que no hay problemas
+     * @return lista de tutores compatibles
+     */
+    public ArrayList<Tutor> buscarTutoresDisponibles( ArrayList<Tutor> tutores, String nombreMateria,
+                                                        LocalDate fecha, LocalTime horaInicio, LocalTime horaFin,
+                                                        ArrayList<Reserva> reservasExistentes ){
+        ArrayList<Tutor> compatibles = new ArrayList<>();
+
+        for ( Tutor tutor : tutores ){
+            MateriaTutor materia = tutor.buscarMateria(nombreMateria);
+            if ( materia == null ) continue;
+
+            if ( ! tutorDisponible(tutor, fecha, horaInicio, horaFin )) continue;
+            if  ( hayConflictoHorario(tutor, reservasExistentes, fecha, horaInicio, horaFin) ) continue;
+
+
+
+            int activas = 0;
+            for (Reserva r : reservasExistentes) {
+                if (    r.getTutor().getId() == tutor.getId()
+                        && r.getMateriaTutor().getNombreMateria().equalsIgnoreCase(nombreMateria)
+                        && !r.getEstadoReserva().equals("CANCELADA")) {
+                    activas++;
+                }
+            }
+            if ( activas >= materia.getCupoMaximo()) continue;
+            compatibles.add(tutor);
+
+        }
+        return compatibles;
+    }
+
 }
