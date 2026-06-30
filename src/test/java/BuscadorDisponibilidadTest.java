@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * - Hora de termino despues del bloque retorna false
  * - Multiples bloques donde uno coincide retorna true
  *
- * Se prueba para hayConflictoHorario:
+ * Se prueba para hayConflictoHorarioTutor:
  * - Sin reservas no hay conflicto
  * - Reserva de otro tutor no genera conflicto
  * - Reserva de otro dia no genera conflicto
@@ -35,7 +35,17 @@ import static org.junit.jupiter.api.Assertions.*;
  * - Superposicion parcial al inicio genera conflicto
  * - Superposicion parcial al final genera conflicto
  * - Nueva reserva completamente dentro de la existente genera conflicto
+ *
+ * Se prueba para hayConflictoHorarioEstudiante:
+ * - Estudiante sin reservas no genera conflicto
+ * - Reserva de otro estudiante no genera conflicto
+ * - Reserva de otro dia no genera conflicto
+ * - Reserva cancelada del mismo estudiante en el mismo horario no genera conflicto
+ * - Nueva reserva que empieza cuando termina la existente no genera conflicto
+ * - Nueva reserva que termina cuando empieza la existente no genera conflicto
+ * - Superposicion de horario con otra clase del estudiante genera conflicto
  */
+
 class BuscadorDisponibilidadTest {
 
     private BuscadorDisponibilidad buscador;
@@ -59,7 +69,7 @@ class BuscadorDisponibilidadTest {
                 .build();
 
         materia = tutor.getMaterias().get(0);
-        estudiante = new Estudiante(201, "Javier", "jvidal@udec.cl", "99999999");
+        estudiante = new Estudiante(201, "Javier", "jvidal@udec.cl", "9999999");
         fecha = LocalDate.of(2026, 6, 19);
     }
 
@@ -121,20 +131,20 @@ class BuscadorDisponibilidadTest {
     }
 
 
-    // tests dedicados a hayConflictoHorario
+    // tests dedicados a hayConflictoHorarioTutor
 
     @Test
     void solicitarReservaSinReservasExistentes() {
         ArrayList<Reserva> reservas = new ArrayList<>();
 
-        assertFalse(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertFalse(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
     }
 
     @Test
     void solicitarReservaHorarioOcupadoPorOtroTutor() {
         Tutor otroTutor = new TutorBuilder()
-                .conDatosBasicos(2, "Jose", "jfuenteso@udec.cl", "99999999")
+                .conDatosBasicos(2, "Jose", "jfuentes@udec.cl", "999999")
                 .agregarDisponibilidad(fecha, LocalTime.of(14, 0), LocalTime.of(18, 0))
                 .build();
 
@@ -142,7 +152,7 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(otroTutor, estudiante, materia, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
 
-        assertFalse(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertFalse(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
     }
 
@@ -153,7 +163,7 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(tutor, estudiante, materia, otraFecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
 
-        assertFalse(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertFalse(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
     }
 
@@ -165,7 +175,7 @@ class BuscadorDisponibilidadTest {
         reservaCancelada.cancelarReserva();
         reservas.add(reservaCancelada);
 
-        assertFalse(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertFalse(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
     }
 
@@ -175,7 +185,7 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(tutor, estudiante, materia, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
 
-        assertFalse(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertFalse(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(15, 0), LocalTime.of(16, 0)));
     }
 
@@ -185,7 +195,7 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(tutor, estudiante, materia, fecha,
                 LocalTime.of(15, 0), LocalTime.of(16, 0)));
 
-        assertFalse(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertFalse(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
     }
 
@@ -195,7 +205,7 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(tutor, estudiante, materia, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
 
-        assertTrue(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertTrue(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(14, 30), LocalTime.of(15, 30)));
     }
 
@@ -205,7 +215,7 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(tutor, estudiante, materia, fecha,
                 LocalTime.of(14, 0), LocalTime.of(15, 0)));
 
-        assertTrue(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertTrue(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
                 LocalTime.of(13, 30), LocalTime.of(14, 30)));
     }
 
@@ -215,7 +225,80 @@ class BuscadorDisponibilidadTest {
         reservas.add(new Reserva(tutor, estudiante, materia, fecha,
                 LocalTime.of(14, 0), LocalTime.of(16, 0)));
 
-        assertTrue(buscador.hayConflictoHorario(tutor, reservas, fecha,
+        assertTrue(buscador.hayConflictoHorarioTutor(tutor, reservas, fecha,
+                LocalTime.of(14, 30), LocalTime.of(15, 30)));
+    }
+
+
+    // tests dedicados a hayConflictoHorarioEstudiante
+
+    @Test
+    void estudianteSinReservas() {
+        assertFalse(buscador.hayConflictoHorarioEstudiante(estudiante, new ArrayList<>(), fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+    }
+
+    @Test
+    void reservaDeOtroEstudiante() {
+        Estudiante otroEstudiante = new Estudiante(999, "Bryan", "bryan@udec.cl", "1");
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        reservas.add(new Reserva(tutor, otroEstudiante, materia, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+
+        assertFalse(buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+    }
+
+    @Test
+    void reservasDiasDistintosMismoEstudiante() {
+        LocalDate otraFecha = LocalDate.of(2026, 6, 20);
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        reservas.add(new Reserva(tutor, estudiante, materia, otraFecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+
+        assertFalse(buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+    }
+
+    @Test
+    void reservaCanceladaEstudiante() {
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        Reserva cancelada = new Reserva(tutor, estudiante, materia, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0));
+        cancelada.cancelarReserva();
+        reservas.add(cancelada);
+
+        assertFalse(buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+    }
+
+    @Test
+    void reservaEstudianteEmpiezaCuandoTerminaOtraClase() {
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        reservas.add(new Reserva(tutor, estudiante, materia, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+
+        assertFalse(buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha,
+                LocalTime.of(15, 0), LocalTime.of(16, 0)));
+    }
+
+    @Test
+    void reservaEstudianteTerminaCuandoEmpiezaOtraClase() {
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        reservas.add(new Reserva(tutor, estudiante, materia, fecha,
+                LocalTime.of(15, 0), LocalTime.of(16, 0)));
+
+        assertFalse(buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+    }
+
+    @Test
+    void reservaEstudianteConSuperposicionHorario() {
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        reservas.add(new Reserva(tutor, estudiante, materia, fecha,
+                LocalTime.of(14, 0), LocalTime.of(15, 0)));
+
+        assertTrue(buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha,
                 LocalTime.of(14, 30), LocalTime.of(15, 30)));
     }
 }

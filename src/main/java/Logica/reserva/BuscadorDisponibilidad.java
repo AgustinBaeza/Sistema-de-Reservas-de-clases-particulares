@@ -1,5 +1,6 @@
 package Logica.reserva;
 
+import Logica.estudiante.Estudiante;
 import Logica.tutor.DisponibilidadTutor;
 import Logica.tutor.MateriaTutor;
 import Logica.tutor.Tutor;
@@ -75,8 +76,8 @@ public class BuscadorDisponibilidad {
      * @param horaFin hora de termino de la reserva solicitada
      * @return true si la flag de conflicto se activo al detectar una superposicion de horarios, false en caso contrario
      */
-    public boolean hayConflictoHorario(Tutor tutor, ArrayList<Reserva> reservas,
-                                       LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
+    public boolean hayConflictoHorarioTutor(Tutor tutor, ArrayList<Reserva> reservas,
+                                            LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
 
         this.flagConflictoHorario = false;
 
@@ -87,6 +88,58 @@ public class BuscadorDisponibilidad {
             }
 
             if (!reserva.getFecha().equals(fecha)) {
+                continue;
+            }
+
+            if (reserva.getEstadoReserva().equals("CANCELADA")) {
+                continue;
+            }
+
+            if (!horaInicio.isBefore(reserva.getHoraFin())) {
+                continue;
+            }
+
+            if (!horaFin.isAfter(reserva.getHoraInicio())) {
+                continue;
+            }
+
+            this.flagConflictoHorario = true;
+            break;
+        }
+
+        return flagConflictoHorario;
+    }
+
+    /**
+     * Metodo que verifica si un mismo estudiante tiene conflicto horario con una clase previamente reservada para el,
+     * que seria el caso de que un mismo estudiante tenga dos clases a la misma hora, se utiliza una flag
+     * que en un principio asume que no hay conflicto entre los horarios de las reservas.
+     * Va analizando cada reserva registrada en el sistema y por cada una de ellas aplica descartes secuenciales:
+     * - Si es que la reserva existente no corresponde al mismo estudiante que se esta consultando, se descarta.
+     * - Si es que no es del mismo dia el posible conflicto, se descarta para no abarcar reservas de otros dias.
+     * - Si es que la reserva con la que esta chocando se encuentra cancelada, se descarta pues ese horario ya no esta ocupado.
+     * - Si es que la nueva reserva no empieza antes de que la otra reserva termine, se descarta al no coincidir en el mismo bloque horario.
+     * - Si es que la nueva reserva no termina despues de que la otra reserva empiece, se descarta al no haber un choque en el rango de horas.
+     *
+     * Si una reserva supera todos los descartes, se modifica la flag confirmando que hay conflicto horario para el estudiante.
+     * @param estudiante estudiante cuya agenda se desea verificar
+     * @param reservas lista de reservas existentes en el sistema
+     * @param fecha fecha en la que se desea la clase
+     * @param horaInicio hora de inicio de la reserva solicitada
+     * @param horaFin hora de termino de la reserva solicitada
+     * @return true si la flag de conflicto se activo al detectar una superposicion de horarios, false en caso contrario
+     */
+    public boolean hayConflictoHorarioEstudiante(Estudiante estudiante, ArrayList<Reserva> reservas,
+                                          LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
+        this.flagConflictoHorario = false;
+
+        for (Reserva reserva : reservas) {
+
+            if (reserva.getEstudiante().getId() != estudiante.getId()) {
+                continue;
+            }
+
+            if (!reserva.getFecha().equals(fecha)){
                 continue;
             }
 
@@ -129,10 +182,9 @@ public class BuscadorDisponibilidad {
             if ( materia == null ) continue;
 
             if ( ! tutorDisponible(tutor, fecha, horaInicio, horaFin )) continue;
-            if  ( hayConflictoHorario(tutor, reservasExistentes, fecha, horaInicio, horaFin) ) continue;
+            if  ( hayConflictoHorarioTutor(tutor, reservasExistentes, fecha, horaInicio, horaFin) ) continue;
 
-
-
+            
             int activas = 0;
             for (Reserva r : reservasExistentes) {
                 if (    r.getTutor().getId() == tutor.getId()

@@ -31,7 +31,7 @@ public class GestorReservas {
 
     /**
      * Crea una reserva entre tutor y estudiante para una materia,
-     * verifica si el tutor tiene disponibilidad, no hayan confilictos
+     * verifica si el tutor tiene disponibilidad o si un mismo estudiante no tiene dos clases al mismo tiempo.
      * de horario y que exista cupo para la materia.
      *
      * @param tutor tutor que hace la tutoria
@@ -52,9 +52,14 @@ public class GestorReservas {
             throw new ConflictoHorarioException("El tutor no tiene disponibilidad en ese horario.");
         }
 
-        if (buscador.hayConflictoHorario(tutor, reservas, fecha, horaInicio, horaFin)) {
+        if (buscador.hayConflictoHorarioTutor(tutor, reservas, fecha, horaInicio, horaFin)) {
             throw new ConflictoHorarioException("El tutor ya tiene una reserva en ese horario.");
         }
+
+        if (buscador.hayConflictoHorarioEstudiante(estudiante, reservas, fecha, horaInicio, horaFin)) {
+            throw new ConflictoHorarioException("El estudiante ya tiene una clase en ese horario.");
+        }
+
         if ( contadorReservasActivas(tutor, materiaTutor) >= materiaTutor.getCupoMaximo() ){
             throw new CupoMaximoExcedidoException("El cupo de la materia esta completo.");
         }
@@ -68,6 +73,8 @@ public class GestorReservas {
      * Metodo que modifica una reserva existente, validando su estado actual y la disponibilidad del nuevo tutor.
      * Para evitar un falso conflicto contra si misma, genera una lista temporal con todas las reservas del sistema
      * menos la reserva actual que se desea modificar antes de realizar la verificacion horaria.
+     * Paralelamente se necesita validar el cupo de la materia nueva en caso de que se requiera modificar, para ese analisis
+     * se excluye la materia actual del conteo de cupos pues de lo contrario generaria un falso conflicto con la misma materia.
      */
     public void modificarReserva(Reserva reserva, Tutor nuevoTutor, MateriaTutor nuevaMateria,
                                  Estudiante nuevoEstudiante, LocalDate nuevaFecha,
@@ -84,8 +91,12 @@ public class GestorReservas {
 
         otrasReservas.remove(reserva);
 
-        if (buscador.hayConflictoHorario(nuevoTutor, otrasReservas, nuevaFecha, nuevoHoraInicio, nuevoHoraFin)) {
+        if (buscador.hayConflictoHorarioTutor(nuevoTutor, otrasReservas, nuevaFecha, nuevoHoraInicio, nuevoHoraFin)) {
             throw new ConflictoHorarioException("El tutor ya tiene una reserva en ese horario.");
+        }
+
+        if (buscador.hayConflictoHorarioEstudiante(nuevoEstudiante, otrasReservas, nuevaFecha, nuevoHoraInicio, nuevoHoraFin)) {
+            throw new ConflictoHorarioException("El estudiante ya tiene una clase en ese horario.");
         }
 
         int activas = 0;
