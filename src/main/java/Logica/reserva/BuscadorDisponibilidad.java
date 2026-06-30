@@ -184,7 +184,7 @@ public class BuscadorDisponibilidad {
             if ( ! tutorDisponible(tutor, fecha, horaInicio, horaFin )) continue;
             if  ( hayConflictoHorarioTutor(tutor, reservasExistentes, fecha, horaInicio, horaFin) ) continue;
 
-            
+
             int activas = 0;
             for (Reserva r : reservasExistentes) {
                 if (    r.getTutor().getId() == tutor.getId()

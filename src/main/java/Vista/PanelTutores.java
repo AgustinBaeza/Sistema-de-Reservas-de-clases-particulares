@@ -1,22 +1,19 @@
-package GUI;
+package Vista;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class PanelEstudiante extends JPanel {
+public class PanelTutores extends JPanel {
 
-    public PanelEstudiante() {
+    public PanelTutores() {
 
-        setBorder(BorderFactory.createTitledBorder("Estudiantes"));
+        setBorder(BorderFactory.createTitledBorder("Tutores"));
         setLayout(new GridLayout(0,1,10,10));
 
         add(new JLabel("Nombre"));
         add(new JTextField());
 
-        add(new JLabel("Carrera"));
-        add(new JTextField());
-
-        add(new JLabel("Rut"));
+        add(new JLabel("Ramo"));
         add(new JTextField());
 
         add(new JButton("Agregar"));

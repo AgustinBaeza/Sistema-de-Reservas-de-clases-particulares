@@ -1,6 +1,6 @@
 package Logica.tutor;
 
-import Logica.excepciones.ConstruccionTutorInvalida;
+import Logica.excepciones.ConstruccionTutorInvalidaException;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -81,7 +81,7 @@ class TutorBuilderTest {
     void agregarMateriaSinDatosBasicosLanzaExcepcion() {
         TutorBuilder builder = new TutorBuilder();
 
-        assertThrows(ConstruccionTutorInvalida.class, () ->
+        assertThrows(ConstruccionTutorInvalidaException.class, () ->
                 builder.agregarMateria("Calculo III", 15000, 3));
     }
 
@@ -89,7 +89,7 @@ class TutorBuilderTest {
     void agregarDisponibilidadSinDatosBasicosLanzaExcepcion() {
         TutorBuilder builder = new TutorBuilder();
 
-        assertThrows(ConstruccionTutorInvalida.class, () ->
+        assertThrows(ConstruccionTutorInvalidaException.class, () ->
                 builder.agregarDisponibilidad(LocalDate.of(2026, 6, 24), LocalTime.of(14, 0), LocalTime.of(18, 0)));
     }
 
@@ -97,6 +97,6 @@ class TutorBuilderTest {
     void buildSinDatosBasicosLanzaExcepcion() {
         TutorBuilder builder = new TutorBuilder();
 
-        assertThrows(ConstruccionTutorInvalida.class, builder::build);
+        assertThrows(ConstruccionTutorInvalidaException.class, builder::build);
     }
 }

@@ -5,13 +5,13 @@ package Logica.excepciones;
  * (por ejemplo, confirmar una reserva ya cancelada).
  */
 
-public class AccionEstadoInvalida extends RuntimeException {
+public class AccionEstadoInvalidaException extends RuntimeException {
 
     /**
      * Constructor utilizado para lanzar mensaje descriptivo sobre la excepcion
      * @param mensaje mensaje descriptivo sobre la excepcion
      */
-    public AccionEstadoInvalida(String mensaje) {
+    public AccionEstadoInvalidaException(String mensaje) {
         super(mensaje);
     }
 }

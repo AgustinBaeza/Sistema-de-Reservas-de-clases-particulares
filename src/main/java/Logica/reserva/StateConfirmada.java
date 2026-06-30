@@ -1,6 +1,6 @@
 package Logica.reserva;
 
-import Logica.excepciones.AccionEstadoInvalida;
+import Logica.excepciones.AccionEstadoInvalidaException;
 
 /**
  * Estado en el que una reserva se encuentra confirmada
@@ -11,11 +11,11 @@ public class StateConfirmada implements StateReserva{
     /**
      * Metodo para confirmar una reserva, como su estado actual es confirmada, se impide volver a confirmarla con una excepcion
      * @param reserva reserva sobre la cual se intenta confirmar su sesion
-     * @throws AccionEstadoInvalida se lanza excepcion pues no se puede confirmar una reserva ya confirmada
+     * @throws AccionEstadoInvalidaException se lanza excepcion pues no se puede confirmar una reserva ya confirmada
      */
     @Override
     public void confirmar(Reserva reserva) {
-        throw new AccionEstadoInvalida("La reserva ya se encuentra confirmada.");
+        throw new AccionEstadoInvalidaException("La reserva ya se encuentra confirmada.");
     }
 
     /**
