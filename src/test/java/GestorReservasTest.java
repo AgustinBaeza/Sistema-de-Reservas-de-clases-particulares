@@ -108,7 +108,7 @@ class GestorReservasTest {
                 fecha, LocalTime.of(15, 0), LocalTime.of(16, 0));
         gestor.cancelarReserva(r);
 
-        assertThrows(AccionEstadoInvalida.class, () ->
+        assertThrows(AccionEstadoInvalidaException.class, () ->
                 gestor.modificarReserva(r, tutor1, materia, estudiante1,
                         fecha, LocalTime.of(16, 0), LocalTime.of(17, 0)));
     }

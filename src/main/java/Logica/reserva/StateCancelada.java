@@ -1,6 +1,6 @@
 package Logica.reserva;
 
-import Logica.excepciones.AccionEstadoInvalida;
+import Logica.excepciones.AccionEstadoInvalidaException;
 
 /**
  * Estado en el que una reserva se encuentra cancelada
@@ -11,21 +11,21 @@ public class StateCancelada implements StateReserva{
     /**
      * Metodo para confirmar una reserva, como su estado actual es cancelada, se impide volver a confirmarla con una excepcion
      * @param reserva reserva sobre la cual se intenta confirmar su sesion
-     * @throws AccionEstadoInvalida se lanza excepcion pues no se puede confirmar una reserva ya cancelada
+     * @throws AccionEstadoInvalidaException se lanza excepcion pues no se puede confirmar una reserva ya cancelada
      */
     @Override
     public void confirmar(Reserva reserva) {
-        throw new AccionEstadoInvalida("No se puede confirmar una reserva cancelada.");
+        throw new AccionEstadoInvalidaException("No se puede confirmar una reserva cancelada.");
     }
 
     /**
      * Metodo para cancelar una reserva, como su estado actual es cancelada, se impide volver a cancelarla con una excepcion
      * @param reserva reserva sobre la cual se intenta cancelar su sesion
-     * @throws AccionEstadoInvalida se lanza excepcion pues no se puede cancelar una reserva ya cancelada
+     * @throws AccionEstadoInvalidaException se lanza excepcion pues no se puede cancelar una reserva ya cancelada
      */
     @Override
     public void cancelar(Reserva reserva) {
-        throw new AccionEstadoInvalida("La reserva ya se encuentra cancelada.");
+        throw new AccionEstadoInvalidaException("La reserva ya se encuentra cancelada.");
     }
 
     /**
@@ -35,7 +35,7 @@ public class StateCancelada implements StateReserva{
      */
     @Override
     public void validarModificacion(Reserva reserva) {
-        throw new AccionEstadoInvalida("No se puede modificar una reserva cancelada.");
+        throw new AccionEstadoInvalidaException("No se puede modificar una reserva cancelada.");
     }
 
     /**

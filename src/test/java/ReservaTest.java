@@ -1,7 +1,7 @@
 package Logica.reserva;
 
 import Logica.estudiante.Estudiante;
-import Logica.excepciones.AccionEstadoInvalida;
+import Logica.excepciones.AccionEstadoInvalidaException;
 import Logica.tutor.MateriaTutor;
 import Logica.tutor.Tutor;
 import Logica.tutor.TutorBuilder;
@@ -68,7 +68,7 @@ class ReservaTest {
     @Test
     void confirmarConfirmadaLanzaExcepcion() {
         reserva.confirmarReserva();
-        assertThrows(AccionEstadoInvalida.class, () -> reserva.confirmarReserva());
+        assertThrows(AccionEstadoInvalidaException.class, () -> reserva.confirmarReserva());
     }
 
     @Test
@@ -87,18 +87,18 @@ class ReservaTest {
     @Test
     void confirmarCanceladaLanzaExcepcion() {
         reserva.cancelarReserva();
-        assertThrows(AccionEstadoInvalida.class, () -> reserva.confirmarReserva());
+        assertThrows(AccionEstadoInvalidaException.class, () -> reserva.confirmarReserva());
     }
 
     @Test
     void cancelarCanceladaLanzaExcepcion() {
         reserva.cancelarReserva();
-        assertThrows(AccionEstadoInvalida.class, () -> reserva.cancelarReserva());
+        assertThrows(AccionEstadoInvalidaException.class, () -> reserva.cancelarReserva());
     }
 
     @Test
     void validarModificacionCanceladaLanzaExcepcion() {
         reserva.cancelarReserva();
-        assertThrows(AccionEstadoInvalida.class, () -> reserva.validarModificacion());
+        assertThrows(AccionEstadoInvalidaException.class, () -> reserva.validarModificacion());
     }
 }

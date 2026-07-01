@@ -1,6 +1,6 @@
 package Logica.tutor;
 
-import Logica.excepciones.ConstruccionTutorInvalida;
+import Logica.excepciones.ConstruccionTutorInvalidaException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -69,7 +69,7 @@ public class TutorBuilder {
      */
     private void asegurarTutorCreado() {
         if (tutorEnConstruccion == null) {
-            throw new ConstruccionTutorInvalida(
+            throw new ConstruccionTutorInvalidaException(
                     "Debe llamar a conDatosBasicos() antes de agregar materias o disponibilidades."
             );
         }
