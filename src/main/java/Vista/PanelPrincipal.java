@@ -35,7 +35,7 @@ public class PanelPrincipal extends JPanel {
         panelContenido.add(new PanelInicio(), PanelSistema.INICIO.getIdPanel());
         panelContenido.add(crearPanelTemporal("> panel de tutores que iria aca <"), PanelSistema.TUTORES.getIdPanel());
         panelContenido.add(crearPanelTemporal("> panel de estudiantes que iria aca <"), PanelSistema.ESTUDIANTES.getIdPanel());
-        panelContenido.add(crearPanelTemporal("> panel de reservas que iria aca <"), PanelSistema.RESERVAS.getIdPanel());
+        panelContenido.add(new PanelReservas(controlador), PanelSistema.RESERVAS.getIdPanel());
         panelContenido.add(crearPanelTemporal("> panel de calendario que iria aca <"), PanelSistema.CALENDARIO.getIdPanel());
 
         add(panelMenu, BorderLayout.WEST);

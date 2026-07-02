@@ -43,6 +43,38 @@ public class SistemaReservasControlador{
         this.gestorTutores = new GestionarTutores();
         this.gestorEstudiantes = new GestionarEstudiantes();
         this.gestorReservas = new GestorReservas(buscadorDisponibilidad);
+
+        //BORRAR dsps
+        datosPrueba();
+    }
+
+    // datos para probar :) borrar dsps
+    private void datosPrueba() {
+
+        Tutor pedro = gestorTutores.crearPerfilTutor("Pedro Soto", "pedro@gmail.com", "999999999");
+        gestorTutores.definirMateriaTutor(pedro.getId(), "Calculo III", 15000, 3);
+        gestorTutores.definirMateriaTutor(pedro.getId(), "Algebra",     12000, 2);
+        gestorTutores.definirDisponibilidadTutor(pedro.getId(),
+                LocalDate.of(2026, 7, 7), LocalTime.of(14, 0), LocalTime.of(18, 0));
+        gestorTutores.definirDisponibilidadTutor(pedro.getId(),
+                LocalDate.of(2026, 7, 8), LocalTime.of(9, 0),  LocalTime.of(12, 0));
+
+        Tutor ana = gestorTutores.crearPerfilTutor("Ana Muñoz", "ana@gmail.com", "988888888");
+        gestorTutores.definirMateriaTutor(ana.getId(), "Calculo III", 12000, 4);
+        gestorTutores.definirMateriaTutor(ana.getId(), "Fisica I",    10000, 3);
+        gestorTutores.definirDisponibilidadTutor(ana.getId(),
+                LocalDate.of(2026, 7, 7), LocalTime.of(14, 0), LocalTime.of(18, 0));
+        gestorTutores.definirDisponibilidadTutor(ana.getId(),
+                LocalDate.of(2026   , 7, 9), LocalTime.of(10, 0), LocalTime.of(14, 0));
+
+        Tutor luis = gestorTutores.crearPerfilTutor("Luis Vera", "luis@gmail.com", "977777777");
+        gestorTutores.definirMateriaTutor(luis.getId(), "Fisica I", 11000, 2);
+        gestorTutores.definirDisponibilidadTutor(luis.getId(),
+                LocalDate.of(2026, 7, 8), LocalTime.of(14, 0), LocalTime.of(17, 0));
+
+        gestorEstudiantes.crearPerfilEstudiante("Juan Garcia",    "juan@gmail.com",    "911111111");
+        gestorEstudiantes.crearPerfilEstudiante("Mario Perez",  "maria@gmail.com",   "922222222");
+        gestorEstudiantes.crearPerfilEstudiante("Carlos Lopes",  "carlos@gmail.com",  "933333333");
     }
 
 
