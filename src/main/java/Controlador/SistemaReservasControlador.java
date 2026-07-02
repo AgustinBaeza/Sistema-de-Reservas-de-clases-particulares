@@ -32,8 +32,6 @@ public class SistemaReservasControlador{
     private GestionarTutores gestorTutores;
     private GestionarEstudiantes gestorEstudiantes;
     private GestorReservas gestorReservas;
-    private CargadoGuardadoTutor cargadoGuardadoTutor;
-
 
     /**
      * Constructor del controlador principal, inicializa los gestores necesarios
