@@ -76,4 +76,17 @@ public class GestionarEstudiantes {
     public ArrayList<Estudiante> getEstudiantes() {
         return estudiantes;
     }
+
+    /**
+     * Metodo para que las id sigan sumando despues de cargar estudiantes
+     * al sistema mediante CargadoGuardadoTutor
+     */
+    public void actualizarSiguienteId() {
+        int mayor = 499;
+        for (Estudiante e : estudiantes) {
+            if (e.getId() > mayor) mayor = e.getId();
+        }
+        siguienteId = mayor + 1;
+    }
+
 }

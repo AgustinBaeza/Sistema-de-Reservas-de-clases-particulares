@@ -1,0 +1,8 @@
+500;Juan Garcia;jgarcia@udec.cl;911111111
+501;Maria Perez;mperez@udec.cl;922222222
+502;Carlos Lopez;clopez@udec.cl;933333333
+503;Sofia Morales;smorales@udec.cl;944444444
+504;Matias Silva;msilva@udec.cl;955555555
+505;Fernanda Torres;ftorres@udec.cl;966666666
+506;Nicolas Reyes;nreyes@udec.cl;977777777
+507;Isidora Fuentes;ifuentes@udec.cl;988888888

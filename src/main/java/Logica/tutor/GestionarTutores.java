@@ -267,4 +267,22 @@ public class GestionarTutores {
 
         return tutoresEncontrados;
     }
+
+    /**
+     * Metodo para que las id sigan sumando despues de cargar tutores
+     * al sistema mediante CargadoGuardadoTutor
+     */
+    public void actualizarSiguienteId() {
+
+        int mayor = 0;
+
+        for (Tutor tutor : tutores) {
+            if (tutor.getId() > mayor) {
+                mayor = tutor.getId();
+            }
+        }
+
+        siguienteId = mayor + 1;
+    }
+
 }

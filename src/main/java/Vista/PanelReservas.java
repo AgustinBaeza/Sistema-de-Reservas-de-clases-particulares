@@ -13,6 +13,12 @@ import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+/**
+ * Panel encargado de la gestion de reservas de clases particulares.
+ * Permite buscar tutores disponibles segun una materia, fecha y horario,
+ * crear nuevas reservas, visualizar todas las reservas registradas y
+ * confirmar o cancelar reservas existentes mediante una interfaz grafica.
+ */
 public class PanelReservas extends JPanel {
     private SistemaReservasControlador controladorSistema;
 
@@ -33,7 +39,17 @@ public class PanelReservas extends JPanel {
     private JButton botonConfirmar;
     private JButton botonCancelar;
 
-
+    /**
+     * Constructor de panelReservas.
+     * Inicializa el controlador del sistema, la lista auxiliar de reservas
+     * mostradas en la tabla y construye todos los componentes graficos del
+     * panel, incluyendo el titulo, el formulario de creacion de reservas y
+     * la tabla de reservas registradas. Ademas registra los eventos de los
+     * botones y carga la informacion inicial en la tabla.
+     *
+     * @param controladorSistema controlador principal encargado de gestionar
+     *                           la logica del sistema de reservas.
+     */
     public PanelReservas(SistemaReservasControlador controladorSistema) {
         this.controladorSistema = controladorSistema;
         this.reservasAMostrar = new ArrayList<>();
@@ -45,8 +61,16 @@ public class PanelReservas extends JPanel {
         add(panelFormulario(), BorderLayout.WEST);
         add(panelTabla(), BorderLayout.CENTER);
         agregarEventos();
+        actualizarTabla();
     }
 
+    /**
+     * Crea el panel superior del modulo de reservas.
+     * Contiene el titulo principal que identifica la seccion de reservas
+     * dentro de la interfaz grafica.
+     *
+     * @return panel con el titulo del modulo.
+     */
     private JPanel panelTitulo(){
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel titulo = new JLabel("Reservas:");
@@ -57,6 +81,15 @@ public class PanelReservas extends JPanel {
         return panel;
     }
 
+    /**
+     * Crea el panel del formulario utilizado para ingresar los datos
+     * necesarios para registrar una nueva reserva.
+     * Contiene los campos de materia, fecha, horario, seleccion de tutor
+     * y estudiante, ademas de los botones para buscar tutores, crear la
+     * reserva y limpiar el formulario.
+     *
+     * @return panel con el formulario de creacion de reservas.
+     */
     private JPanel panelFormulario(){
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
 
@@ -94,6 +127,10 @@ public class PanelReservas extends JPanel {
         return panel;
     }
 
+    /**
+     * Registra todos los eventos de los botones del panel de reservas,
+     * asociando cada accion de la interfaz con su metodo correspondiente.
+     */
     private void agregarEventos() {
         botonBuscarTutores.addActionListener(e -> buscarTutoresDisponibles());
         botonLimpiar.addActionListener(e -> limpiarFormulario());
@@ -102,6 +139,12 @@ public class PanelReservas extends JPanel {
         botonCancelar.addActionListener(e -> cancelarReserva());
     }
 
+    /**
+     * Busca los tutores disponibles para la materia, fecha y horario ingresados.
+     * Valida que la materia no este vacia y que la fecha y horas tengan un formato valido.
+     * Si existen tutores compatibles, los carga en el combobox de seleccion junto con
+     * los estudiantes registrados en el sistema.
+     */
     private void buscarTutoresDisponibles(){
         String nombreMateria = txtMateria.getText().trim();
         if (nombreMateria.isBlank()) {
@@ -136,6 +179,12 @@ public class PanelReservas extends JPanel {
 
     }
 
+    /**
+     * Construye el panel que muestra la tabla de reservas registradas junto
+     * con los botones para confirmar o cancelar una reserva.
+     *
+     * @return panel que contiene la tabla de reservas y sus acciones.
+     */
     private JPanel panelTabla(){
         JPanel panel = new JPanel(new BorderLayout(0,9));
         panel.setBorder(BorderFactory.createTitledBorder("Reservas registradas"));
@@ -170,6 +219,11 @@ public class PanelReservas extends JPanel {
         return panel;
     }
 
+    /**
+     * Actualiza el contenido de la tabla de reservas.
+     * Elimina todas las filas existentes y vuelve a cargar las reservas
+     * registradas actualmente en el sistema.
+     */
     private void actualizarTabla() {
         modeloTabla.setRowCount(0);
         reservasAMostrar.clear();
@@ -191,6 +245,11 @@ public class PanelReservas extends JPanel {
         }
     }
 
+    /**
+     * Confirma la reserva seleccionada en la tabla.
+     * Solicita confirmacion al usuario antes de realizar la operacion y
+     * actualiza la tabla una vez confirmada.
+     */
     private void confirmarReserva(){
         Reserva reserva = getReservaSeleccionada();
         if (reserva == null){
@@ -215,6 +274,11 @@ public class PanelReservas extends JPanel {
         }
     }
 
+    /**
+     * Cancela la reserva seleccionada en la tabla.
+     * Solicita confirmacion al usuario antes de realizar la operacion y
+     * actualiza la tabla una vez cancelada.
+     */
     private void cancelarReserva(){
         Reserva reserva = getReservaSeleccionada();
         if (reserva == null){
@@ -240,6 +304,11 @@ public class PanelReservas extends JPanel {
     }
 
 
+    /**
+     * Crea una nueva reserva utilizando los datos ingresados en el formulario.
+     * Valida la existencia del tutor, estudiante, materia y el formato de la
+     * fecha y horario antes de solicitar la creacion al controlador.
+     */
     private void crearReserva(){
         Tutor tutor = (Tutor) comboBoxTutores.getSelectedItem();
         Estudiante estudiante = (Estudiante) comboBoxEstudiantes.getSelectedItem();
@@ -278,6 +347,10 @@ public class PanelReservas extends JPanel {
 
     }
 
+    /**
+     * Carga en el combobox de seleccion todos los estudiantes registrados
+     * actualmente en el sistema.
+     */
     private void cargarEstudiantes() {
         comboBoxEstudiantes.removeAllItems();
         for (Estudiante e : controladorSistema.getEstudiantes()) {
@@ -285,6 +358,12 @@ public class PanelReservas extends JPanel {
         }
     }
 
+    /**
+     * Obtiene la reserva actualmente seleccionada en la tabla.
+     * Si no existe una fila seleccionada, informa al usuario.
+     *
+     * @return la reserva seleccionada o null si no hay ninguna seleccionada.
+     */
     private Reserva getReservaSeleccionada() {
         int fila = tablaReservas.getSelectedRow();
         if (fila == -1) {
@@ -294,6 +373,9 @@ public class PanelReservas extends JPanel {
         return reservasAMostrar.get(fila);
     }
 
+    /**
+     * Se encarga de borrar todo lo que este escrito en el formulario
+     */
     private void limpiarFormulario() {
         txtMateria.setText("");
         txtFecha.setText("");
@@ -304,7 +386,12 @@ public class PanelReservas extends JPanel {
     }
 
 
-
+    /**
+     * Muestra un cuadro de dialogo con un mensaje para informar al usuario.
+     *
+     * @param mensaje texto que se mostrara en la ventana de dialogo.
+     * @param tipoAviso tipo de mensaje segun JOptionPane (Ej: INFORMATION_MESSAGE)
+     */
     private void mostrarAviso(String mensaje, int tipoAviso) {
 
         JOptionPane.showMessageDialog(this, mensaje, "Aviso", tipoAviso);

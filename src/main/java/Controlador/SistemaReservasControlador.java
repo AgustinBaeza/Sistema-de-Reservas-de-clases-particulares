@@ -1,5 +1,6 @@
 package Controlador;
 
+import Logica.CargadoGuardado.*;
 import Logica.estudiante.Estudiante;
 import Logica.estudiante.GestionarEstudiantes;
 import Logica.excepciones.CampoVacioException;
@@ -15,6 +16,7 @@ import Logica.tutor.GestionarTutores;
 import Logica.tutor.MateriaTutor;
 import Logica.tutor.Tutor;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class SistemaReservasControlador{
     private GestionarTutores gestorTutores;
     private GestionarEstudiantes gestorEstudiantes;
     private GestorReservas gestorReservas;
+    private CargadoGuardadoTutor cargadoGuardadoTutor;
+
 
     /**
      * Constructor del controlador principal, inicializa los gestores necesarios
@@ -44,39 +48,8 @@ public class SistemaReservasControlador{
         this.gestorEstudiantes = new GestionarEstudiantes();
         this.gestorReservas = new GestorReservas(buscadorDisponibilidad);
 
-        //BORRAR dsps
-        datosPrueba();
+        cargarDatos();
     }
-
-    // datos para probar :) borrar dsps
-    private void datosPrueba() {
-
-        Tutor pedro = gestorTutores.crearPerfilTutor("Pedro Soto", "pedro@gmail.com", "999999999");
-        gestorTutores.definirMateriaTutor(pedro.getId(), "Calculo III", 15000, 3);
-        gestorTutores.definirMateriaTutor(pedro.getId(), "Algebra",     12000, 2);
-        gestorTutores.definirDisponibilidadTutor(pedro.getId(),
-                LocalDate.of(2026, 7, 7), LocalTime.of(14, 0), LocalTime.of(18, 0));
-        gestorTutores.definirDisponibilidadTutor(pedro.getId(),
-                LocalDate.of(2026, 7, 8), LocalTime.of(9, 0),  LocalTime.of(12, 0));
-
-        Tutor ana = gestorTutores.crearPerfilTutor("Ana Muñoz", "ana@gmail.com", "988888888");
-        gestorTutores.definirMateriaTutor(ana.getId(), "Calculo III", 12000, 4);
-        gestorTutores.definirMateriaTutor(ana.getId(), "Fisica I",    10000, 3);
-        gestorTutores.definirDisponibilidadTutor(ana.getId(),
-                LocalDate.of(2026, 7, 7), LocalTime.of(14, 0), LocalTime.of(18, 0));
-        gestorTutores.definirDisponibilidadTutor(ana.getId(),
-                LocalDate.of(2026   , 7, 9), LocalTime.of(10, 0), LocalTime.of(14, 0));
-
-        Tutor luis = gestorTutores.crearPerfilTutor("Luis Vera", "luis@gmail.com", "977777777");
-        gestorTutores.definirMateriaTutor(luis.getId(), "Fisica I", 11000, 2);
-        gestorTutores.definirDisponibilidadTutor(luis.getId(),
-                LocalDate.of(2026, 7, 8), LocalTime.of(14, 0), LocalTime.of(17, 0));
-
-        gestorEstudiantes.crearPerfilEstudiante("Juan Garcia",    "juan@gmail.com",    "911111111");
-        gestorEstudiantes.crearPerfilEstudiante("Mario Perez",  "maria@gmail.com",   "922222222");
-        gestorEstudiantes.crearPerfilEstudiante("Carlos Lopes",  "carlos@gmail.com",  "933333333");
-    }
-
 
     // metodos auxiliares
 
@@ -514,4 +487,56 @@ public class SistemaReservasControlador{
 
         return new ArrayList<>(gestorReservas.getReservasEstudiante(estudiante));
     }
+
+    /**
+     * Se encargado de cargar datos guardados en el sistema
+     */
+    public void cargarDatos() {
+        try {
+            CargadoGuardadoTutor.cargarTutores(gestorTutores);
+        } catch (Exception e) {
+            System.out.println("Error al cargar tutores: " + e.getMessage());
+        }
+
+        try {
+            CargadoGuardadoEstudiante.cargarEstudiantes(gestorEstudiantes);
+        } catch (Exception e) {
+            System.out.println("Error al cargar estudiantes: " + e.getMessage());
+        }
+
+        try {
+            CargadoGuardadoReserva.cargarReservas(
+                    gestorReservas.getReservas(),
+                    gestorTutores,
+                    gestorEstudiantes);
+        } catch (Exception e) {
+            System.out.println("Error al cargar reservas: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Guarda tutores, estudiantes y reservas en sus archivos respectivos.
+     * Llamado al cerrar la ventana principal.
+     */
+    public void guardarDatos() {
+        try {
+            CargadoGuardadoTutor.guardarTutores(gestorTutores.getTutores());
+        } catch (IOException e) {
+            System.out.println("Error al guardar tutores: " + e.getMessage());
+        }
+
+        try {
+            CargadoGuardadoEstudiante.guardarEstudiantes(gestorEstudiantes.getEstudiantes());
+        } catch (IOException e) {
+            System.out.println("Error al guardar estudiantes: " + e.getMessage());
+        }
+
+        try {
+            CargadoGuardadoReserva.guardarReservas(gestorReservas.getReservas());
+        } catch (IOException e) {
+            System.out.println("Error al guardar reservas: " + e.getMessage());
+        }
+    }
+
 }
