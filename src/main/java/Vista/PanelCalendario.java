@@ -227,7 +227,9 @@ public class PanelCalendario extends JPanel {
             if ((fecha.isEqual(inicio) || fecha.isAfter(inicio)) &&
                     (fecha.isEqual(fin) || fecha.isBefore(fin))) {
 
-                reservasFiltradas.add(r);
+                if(!r.getEstadoReserva().equals("CANCELADA")) {
+                    reservasFiltradas.add(r);
+                }
             }
         }
     }
@@ -262,8 +264,9 @@ public class PanelCalendario extends JPanel {
 
             if ((fecha.isEqual(inicio) || fecha.isAfter(inicio)) &&
                     (fecha.isEqual(fin) || fecha.isBefore(fin))) {
-
-                reservasFiltradas.add(r);
+                if(!r.getEstadoReserva().equals("CANCELADA")) {
+                    reservasFiltradas.add(r);
+                }
             }
         }
     }
