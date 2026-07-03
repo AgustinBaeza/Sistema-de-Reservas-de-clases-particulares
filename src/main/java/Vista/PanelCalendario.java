@@ -18,6 +18,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
 
+/**
+ * Clase que representa el panel visual del calendario de reservas.
+ * Permite visualizar, filtrar y navegar por las reservas de tutorias
+ * organizadas de forma semanal.
+ */
 public class PanelCalendario extends JPanel {
 
     private SistemaReservasControlador controladorSistema;
@@ -41,6 +46,12 @@ public class PanelCalendario extends JPanel {
     private JComboBox<String> comboBoxTutores;
     private JComboBox<String> comboBoxEstudiantes;
 
+    /**
+     * Constructor del panel. Inicializa los componentes, ajusta el formato de la tabla
+     * y carga las reservas correspondientes a la semana actual.
+     *
+     * @param controladorSistema el controlador principal del sistema para obtener los datos.
+     */
     public PanelCalendario(SistemaReservasControlador controladorSistema) {
         this.controladorSistema = controladorSistema;
 
@@ -76,15 +87,19 @@ public class PanelCalendario extends JPanel {
         cargarSemana();
     }
 
+    /**
+     * Configura el ancho y los renderizadores de las columnas de la tabla.
+     * Establece el alineado centrado para todo el contenido de la tabla.
+     */
     private void ajustarColumnas() {
-        setColumna(0, 90, 90);
-        setColumna(1, 47, 47);
-        setColumna(2, 50, 50);
-        setColumna(3, 50, 50);
-        setColumna(4, 170, 230);
-        setColumna(5, 170, 230);
-        setColumna(6, 170, 230);
-        setColumna(7, 100, 120);
+        setColumna(0, 80, 80);      //dia
+        setColumna(1, 47, 47);      //fecha
+        setColumna(2, 45, 45);      //horaInicio
+        setColumna(3, 45, 45);      //horaFin
+        setColumna(4, 195, 230);    //tutor
+        setColumna(5, 185, 230);    //estudiante
+        setColumna(6, 150, 230);    //materia
+        setColumna(7, 100, 120);    //estado
 
         DefaultTableCellRenderer letrasEnElCentro = new DefaultTableCellRenderer();
         letrasEnElCentro.setHorizontalAlignment(SwingConstants.CENTER);
@@ -94,6 +109,13 @@ public class PanelCalendario extends JPanel {
         }
     }
 
+    /**
+     * Define las propiedades de ancho de una columna especifica.
+     *
+     * @param indice indice de la columna.
+     * @param anchoMin ancho minimo.
+     * @param anchoMax ancho maximo.
+     */
     private void setColumna(int indice, int anchoMin, int anchoMax) {
         TableColumn column = tabla.getColumnModel().getColumn(indice);
         column.setMinWidth(anchoMin);
@@ -101,6 +123,10 @@ public class PanelCalendario extends JPanel {
         column.setPreferredWidth(anchoMin);
     }
 
+    /**
+     * Crea y organiza los componentes del header.
+     * @return un JPanel configurado como header.
+     */
     private JPanel crearHeader() {
 
         JPanel header = new JPanel(new BorderLayout());
@@ -176,6 +202,9 @@ public class PanelCalendario extends JPanel {
         return header;
     }
 
+    /**
+     * Define la logica de los botones de navegacion y filtros.
+     */
     private void cargarAcciones() {
         botonSemanaAnterior.addActionListener(e -> {
             lunesActual = lunesActual.minusWeeks(1);
@@ -226,6 +255,9 @@ public class PanelCalendario extends JPanel {
         });
     }
 
+    /**
+     * Filtra las reservas generales dentro de la semana actual.
+     */
     private void buscarTodasReservas() {
 
         reservasFiltradas.clear();
@@ -248,6 +280,9 @@ public class PanelCalendario extends JPanel {
         }
     }
 
+    /**
+     * Filtra las reservas por estudiante.
+     */
     private void buscarReservasEstudiantes() {
 
         reservasFiltradas.clear();
@@ -286,6 +321,9 @@ public class PanelCalendario extends JPanel {
         }
     }
 
+    /**
+     * Filtra las reservas por tutor.
+     */
     private void buscarReservasTutores() {
 
         reservasFiltradas.clear();
@@ -324,6 +362,9 @@ public class PanelCalendario extends JPanel {
         }
     }
 
+    /**
+     * Ordena las reservas por fecha y hora, y actualiza la tabla.
+     */
     private void cargarSemana() {
         reservasFiltradas.sort(Comparator.comparing(Reserva::getFecha)
                 .thenComparing(Reserva::getHoraInicio));
@@ -376,6 +417,9 @@ public class PanelCalendario extends JPanel {
         actualizarMes();
     }
 
+    /**
+     * Actualiza el label del mes.
+     */
     private void actualizarMes() {
         LocalDate domingo = lunesActual.plusDays(6);
 
@@ -391,6 +435,9 @@ public class PanelCalendario extends JPanel {
         }
     }
 
+    /**
+     * Formatea el texto para que la primera letra sea mayuscula.
+     */
     private String conMayuscula(String texto) {
         if (texto == null || texto.isEmpty()) return texto;
         return texto.substring(0, 1).toUpperCase() + texto.substring(1);
