@@ -15,6 +15,7 @@ import java.time.DayOfWeek;
 import java.time.format.TextStyle;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 
 public class PanelCalendario extends JPanel {
@@ -24,13 +25,16 @@ public class PanelCalendario extends JPanel {
     private DefaultTableModel tablaModelo;
     private LocalDate lunesActual;
     private ArrayList<Reserva> reservasFiltradas = new ArrayList<>();
+
+    private boolean calendarioGeneral = true;
     private boolean filtrandoPorTutor = false;
 
     private JLabel labelMes;
     private JLabel labelCalendarioDe;
 
-    private JButton botonMesAnterior;
-    private JButton botonMesSiguiente;
+    private JButton botonSemanaAnterior;
+    private JButton botonSemanaSiguiente;
+    private JButton botonVerTodas;
     private JButton botonConfirmarTutor;
     private JButton botonConfirmarEstudiante;
 
@@ -44,7 +48,7 @@ public class PanelCalendario extends JPanel {
 
         lunesActual = LocalDate.now().with(DayOfWeek.MONDAY);
 
-        String[] columnas = {"Día", "Fecha", "Inicio", "Fin", "Con", "Materia", "Tarifa"};
+        String[] columnas = {"Día", "Fecha", "Inicio", "Fin", "Tutor", "Estudiante", "Materia", "Estado"};
         tablaModelo = new DefaultTableModel(columnas, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -63,11 +67,12 @@ public class PanelCalendario extends JPanel {
 
         JPanel panelCentrado = new JPanel(new GridBagLayout());
         JScrollPane scrollPane = new JScrollPane(tabla);
-        scrollPane.setPreferredSize(new Dimension(710, 500));
+        scrollPane.setPreferredSize(new Dimension(850, 500));
         panelCentrado.add(scrollPane);
         add(panelCentrado, BorderLayout.CENTER);
 
         cargarAcciones();
+        buscarTodasReservas();
         cargarSemana();
     }
 
@@ -76,16 +81,17 @@ public class PanelCalendario extends JPanel {
         setColumna(1, 47, 47);
         setColumna(2, 50, 50);
         setColumna(3, 50, 50);
-        setColumna(4, 210, 250);
-        setColumna(5, 210, 250);
-        setColumna(6, 50, 50);
+        setColumna(4, 170, 230);
+        setColumna(5, 170, 230);
+        setColumna(6, 170, 230);
+        setColumna(7, 100, 120);
 
         DefaultTableCellRenderer letrasEnElCentro = new DefaultTableCellRenderer();
         letrasEnElCentro.setHorizontalAlignment(SwingConstants.CENTER);
+
         for (int i = 0; i < tabla.getColumnCount(); i++) {
             tabla.getColumnModel().getColumn(i).setCellRenderer(letrasEnElCentro);
         }
-
     }
 
     private void setColumna(int indice, int anchoMin, int anchoMax) {
@@ -99,7 +105,7 @@ public class PanelCalendario extends JPanel {
 
         JPanel header = new JPanel(new BorderLayout());
 
-        //Centro
+        // Centro
         JPanel centro = new JPanel();
         centro.setLayout(new BoxLayout(centro, BoxLayout.Y_AXIS));
 
@@ -107,23 +113,25 @@ public class PanelCalendario extends JPanel {
         labelMes.setFont(new Font("Arial", Font.BOLD, 18));
         labelMes.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        botonMesAnterior = new JButton("Mes anterior");
-        botonMesSiguiente = new JButton("Mes siguiente");
+        botonSemanaAnterior = new JButton("Semana anterior");
+        botonSemanaSiguiente = new JButton("Semana siguiente");
+        botonVerTodas = new JButton("Ver todas");
 
-        JPanel panelBotonesMes = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBotonesMes.add(botonMesAnterior);
-        panelBotonesMes.add(botonMesSiguiente);
+        JPanel panelBotonesSemana = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panelBotonesSemana.add(botonSemanaAnterior);
+        panelBotonesSemana.add(botonSemanaSiguiente);
+        panelBotonesSemana.add(botonVerTodas);
 
-        labelCalendarioDe = new JLabel("Calendario de: ", SwingConstants.CENTER);
+        labelCalendarioDe = new JLabel("Calendario general", SwingConstants.CENTER);
         labelCalendarioDe.setFont(new Font("Arial", Font.BOLD, 14));
         labelCalendarioDe.setAlignmentX(Component.CENTER_ALIGNMENT);
         labelCalendarioDe.setBorder(BorderFactory.createEmptyBorder(5, 0, 10, 0));
 
         centro.add(labelMes);
-        centro.add(panelBotonesMes);
+        centro.add(panelBotonesSemana);
         centro.add(labelCalendarioDe);
 
-        //izquierda
+        // Izquierda
         JPanel izquierda = new JPanel(new BorderLayout());
 
         JLabel labelTutores = new JLabel("Tutores", SwingConstants.CENTER);
@@ -133,7 +141,7 @@ public class PanelCalendario extends JPanel {
             comboBoxTutores.addItem(t.toString());
         }
 
-        botonConfirmarTutor = new JButton("Confirmar usuario");
+        botonConfirmarTutor = new JButton("Confirmar tutor");
 
         JPanel panelTutor = new JPanel(new BorderLayout());
         panelTutor.add(labelTutores, BorderLayout.NORTH);
@@ -142,7 +150,7 @@ public class PanelCalendario extends JPanel {
 
         izquierda.add(panelTutor);
 
-        //derecha
+        // Derecha
         JPanel derecha = new JPanel(new BorderLayout());
 
         JLabel labelEstudiantes = new JLabel("Estudiantes", SwingConstants.CENTER);
@@ -152,7 +160,7 @@ public class PanelCalendario extends JPanel {
             comboBoxEstudiantes.addItem(e.toString());
         }
 
-        botonConfirmarEstudiante = new JButton("Confirmar usuario");
+        botonConfirmarEstudiante = new JButton("Confirmar estudiante");
 
         JPanel panelEstudiante = new JPanel(new BorderLayout());
         panelEstudiante.add(labelEstudiantes, BorderLayout.NORTH);
@@ -161,43 +169,87 @@ public class PanelCalendario extends JPanel {
 
         derecha.add(panelEstudiante);
 
-
-
         header.add(izquierda, BorderLayout.WEST);
         header.add(centro, BorderLayout.CENTER);
         header.add(derecha, BorderLayout.EAST);
+
         return header;
     }
 
-    private void cargarAcciones(){
-        botonMesAnterior.addActionListener(e -> {
+    private void cargarAcciones() {
+        botonSemanaAnterior.addActionListener(e -> {
             lunesActual = lunesActual.minusWeeks(1);
-            if (filtrandoPorTutor) buscarReservasTutores();
-            else buscarReservasEstudiantes();
+
+            if (calendarioGeneral) {
+                buscarTodasReservas();
+            } else if (filtrandoPorTutor) {
+                buscarReservasTutores();
+            } else {
+                buscarReservasEstudiantes();
+            }
+
             cargarSemana();
         });
 
-        botonMesSiguiente.addActionListener(e -> {
+        botonSemanaSiguiente.addActionListener(e -> {
             lunesActual = lunesActual.plusWeeks(1);
-            if (filtrandoPorTutor) buscarReservasTutores();
-            else buscarReservasEstudiantes();
+
+            if (calendarioGeneral) {
+                buscarTodasReservas();
+            } else if (filtrandoPorTutor) {
+                buscarReservasTutores();
+            } else {
+                buscarReservasEstudiantes();
+            }
+
+            cargarSemana();
+        });
+
+        botonVerTodas.addActionListener(e -> {
+            calendarioGeneral = true;
+            buscarTodasReservas();
             cargarSemana();
         });
 
         botonConfirmarTutor.addActionListener(e -> {
+            calendarioGeneral = false;
             filtrandoPorTutor = true;
             buscarReservasTutores();
             cargarSemana();
         });
 
         botonConfirmarEstudiante.addActionListener(e -> {
+            calendarioGeneral = false;
             filtrandoPorTutor = false;
             buscarReservasEstudiantes();
             cargarSemana();
         });
     }
 
-    private void buscarReservasEstudiantes(){
+    private void buscarTodasReservas() {
+
+        reservasFiltradas.clear();
+
+        labelCalendarioDe.setText("Calendario general");
+
+        LocalDate inicio = lunesActual;
+        LocalDate fin = lunesActual.plusDays(6);
+
+        for (Reserva r : controladorSistema.getReservas()) {
+
+            LocalDate fecha = r.getFecha();
+
+            if ((fecha.isEqual(inicio) || fecha.isAfter(inicio)) &&
+                    (fecha.isEqual(fin) || fecha.isBefore(fin)) &&
+                    !r.getEstadoReserva().equals("CANCELADA")) {
+
+                reservasFiltradas.add(r);
+            }
+        }
+    }
+
+    private void buscarReservasEstudiantes() {
+
         reservasFiltradas.clear();
 
         String nombreEstudiante = (String) comboBoxEstudiantes.getSelectedItem();
@@ -213,7 +265,8 @@ public class PanelCalendario extends JPanel {
         }
 
         if (estudiante == null) return;
-        labelCalendarioDe.setText("Calendario de: " + estudiante.toString());
+
+        labelCalendarioDe.setText("Calendario de estudiante: " + estudiante.toString());
 
         LocalDate inicio = lunesActual;
         LocalDate fin = lunesActual.plusDays(6);
@@ -225,11 +278,10 @@ public class PanelCalendario extends JPanel {
             LocalDate fecha = r.getFecha();
 
             if ((fecha.isEqual(inicio) || fecha.isAfter(inicio)) &&
-                    (fecha.isEqual(fin) || fecha.isBefore(fin))) {
+                    (fecha.isEqual(fin) || fecha.isBefore(fin)) &&
+                    !r.getEstadoReserva().equals("CANCELADA")) {
 
-                if(!r.getEstadoReserva().equals("CANCELADA")) {
-                    reservasFiltradas.add(r);
-                }
+                reservasFiltradas.add(r);
             }
         }
     }
@@ -251,7 +303,8 @@ public class PanelCalendario extends JPanel {
         }
 
         if (tutor == null) return;
-        labelCalendarioDe.setText("Calendario de: " + tutor.toString());
+
+        labelCalendarioDe.setText("Calendario de tutor: " + tutor.toString());
 
         LocalDate inicio = lunesActual;
         LocalDate fin = lunesActual.plusDays(6);
@@ -263,16 +316,17 @@ public class PanelCalendario extends JPanel {
             LocalDate fecha = r.getFecha();
 
             if ((fecha.isEqual(inicio) || fecha.isAfter(inicio)) &&
-                    (fecha.isEqual(fin) || fecha.isBefore(fin))) {
-                if(!r.getEstadoReserva().equals("CANCELADA")) {
-                    reservasFiltradas.add(r);
-                }
+                    (fecha.isEqual(fin) || fecha.isBefore(fin))  &&
+                    !r.getEstadoReserva().equals("CANCELADA")) {
+
+                reservasFiltradas.add(r);
             }
         }
     }
 
     private void cargarSemana() {
-
+        reservasFiltradas.sort(Comparator.comparing(Reserva::getFecha)
+                .thenComparing(Reserva::getHoraInicio));
         tablaModelo.setRowCount(0);
 
         LocalDate dia = lunesActual;
@@ -288,21 +342,15 @@ public class PanelCalendario extends JPanel {
 
                 if (r.getFecha().equals(dia)) {
 
-                    Object personaCon;
-                    if (filtrandoPorTutor) {
-                        personaCon = r.getEstudiante();
-                    } else {
-                        personaCon = r.getTutor();
-                    }
-
                     tablaModelo.addRow(new Object[]{
                             conMayuscula(nombreDia),
                             String.valueOf(dia.getDayOfMonth()),
                             r.getHoraInicio(),
                             r.getHoraFin(),
-                            personaCon,
+                            r.getTutor(),
+                            r.getEstudiante(),
                             r.getMateriaTutor().getNombreMateria(),
-                            r.getMateriaTutor().getTarifa()
+                            r.getEstadoReserva()
                     });
 
                     tieneReservas = true;
@@ -313,6 +361,7 @@ public class PanelCalendario extends JPanel {
                 tablaModelo.addRow(new Object[]{
                         conMayuscula(nombreDia),
                         String.valueOf(dia.getDayOfMonth()),
+                        "",
                         "",
                         "",
                         "",
