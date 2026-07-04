@@ -92,16 +92,6 @@ public class PanelCalendario extends JPanel {
      * Establece el alineado centrado para todo el contenido de la tabla.
      */
     private void ajustarColumnas() {
-<<<<<<< HEAD
-        setColumna(0, 90, 90);
-        setColumna(1, 47, 47);
-        setColumna(2, 50, 50);
-        setColumna(3, 50, 50);
-        setColumna(4, 170, 230);
-        setColumna(5, 170, 230);
-        setColumna(6, 170, 230);
-        setColumna(7, 100, 120);
-=======
         setColumna(0, 80, 80);      //dia
         setColumna(1, 47, 47);      //fecha
         setColumna(2, 45, 45);      //horaInicio
@@ -110,7 +100,6 @@ public class PanelCalendario extends JPanel {
         setColumna(5, 185, 230);    //estudiante
         setColumna(6, 150, 230);    //materia
         setColumna(7, 100, 120);    //estado
->>>>>>> ad35bf46ffc2ffb8c64cc4d3d71b63eb1948362c
 
         DefaultTableCellRenderer letrasEnElCentro = new DefaultTableCellRenderer();
         letrasEnElCentro.setHorizontalAlignment(SwingConstants.CENTER);
@@ -213,12 +202,9 @@ public class PanelCalendario extends JPanel {
         return header;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Define la logica de los botones de navegacion y filtros.
      */
->>>>>>> ad35bf46ffc2ffb8c64cc4d3d71b63eb1948362c
     private void cargarAcciones() {
         botonSemanaAnterior.addActionListener(e -> {
             lunesActual = lunesActual.minusWeeks(1);
@@ -269,12 +255,9 @@ public class PanelCalendario extends JPanel {
         });
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Filtra las reservas generales dentro de la semana actual.
      */
->>>>>>> ad35bf46ffc2ffb8c64cc4d3d71b63eb1948362c
     private void buscarTodasReservas() {
 
         reservasFiltradas.clear();
@@ -289,24 +272,17 @@ public class PanelCalendario extends JPanel {
             LocalDate fecha = r.getFecha();
 
             if ((fecha.isEqual(inicio) || fecha.isAfter(inicio)) &&
-<<<<<<< HEAD
-                    (fecha.isEqual(fin) || fecha.isBefore(fin))) {
-=======
                     (fecha.isEqual(fin) || fecha.isBefore(fin)) &&
                     !r.getEstadoReserva().equals("CANCELADA")) {
->>>>>>> ad35bf46ffc2ffb8c64cc4d3d71b63eb1948362c
 
                 reservasFiltradas.add(r);
             }
         }
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Filtra las reservas por estudiante.
      */
->>>>>>> ad35bf46ffc2ffb8c64cc4d3d71b63eb1948362c
     private void buscarReservasEstudiantes() {
 
         reservasFiltradas.clear();

@@ -33,8 +33,8 @@ public class PanelPrincipal extends JPanel {
 
         // por ahora se añaden paneles temporales con el texto descriptivo "> panel --- que iria aca <"
         panelContenido.add(new PanelInicio(), PanelSistema.INICIO.getIdPanel());
-        panelContenido.add(crearPanelTemporal("> panel de tutores que iria aca <"), PanelSistema.TUTORES.getIdPanel());
-        panelContenido.add(crearPanelTemporal("> panel de estudiantes que iria aca <"), PanelSistema.ESTUDIANTES.getIdPanel());
+        panelContenido.add(new PanelTutores(), PanelSistema.TUTORES.getIdPanel());
+        panelContenido.add(new PanelEstudiantes(), PanelSistema.ESTUDIANTES.getIdPanel());
         panelContenido.add(new PanelReservas(controlador), PanelSistema.RESERVAS.getIdPanel());
         panelContenido.add(new PanelCalendario(controlador), PanelSistema.CALENDARIO.getIdPanel());
 
@@ -43,20 +43,6 @@ public class PanelPrincipal extends JPanel {
 
         mostrarPanel(PanelSistema.INICIO);
     }
-
-    // este metodo es SOLO TEMPORAL, una vez que se terminen los paneles hay que BORRARLO!!1111!11 pq es solo para poder ir testeando
-    private JPanel crearPanelTemporal(String mensaje) {
-        JPanel panel = new JPanel(new BorderLayout());
-
-        JLabel lblMensaje = new JLabel(mensaje);
-        lblMensaje.setHorizontalAlignment(SwingConstants.CENTER);
-        lblMensaje.setFont(new Font("Arial", Font.BOLD, 22));
-
-        panel.add(lblMensaje, BorderLayout.CENTER);
-
-        return panel;
-    }
-    //----------q no se olvide borrar :,v---------------
 
     /**
      * Metodo que cambia el panel visible dentro del CardLayout
