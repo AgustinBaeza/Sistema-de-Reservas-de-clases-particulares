@@ -269,7 +269,7 @@ public class PanelReservas extends JPanel {
                 mostrarAviso("Reserva confirmada!", JOptionPane.INFORMATION_MESSAGE);
 
             } catch (Exception ex) {
-                mostrarAviso("Error!", JOptionPane.ERROR_MESSAGE);
+                mostrarAviso("Esta reserva se encuentra cancelada!", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -298,7 +298,7 @@ public class PanelReservas extends JPanel {
                 mostrarAviso("Reserva cancelada!", JOptionPane.INFORMATION_MESSAGE);
 
             } catch (Exception ex) {
-                mostrarAviso("Error!", JOptionPane.ERROR_MESSAGE);
+                mostrarAviso("Esta reserva se encuentra cancelada!", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
