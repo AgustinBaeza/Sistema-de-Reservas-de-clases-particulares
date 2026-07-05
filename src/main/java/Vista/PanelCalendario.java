@@ -442,4 +442,50 @@ public class PanelCalendario extends JPanel {
         if (texto == null || texto.isEmpty()) return texto;
         return texto.substring(0, 1).toUpperCase() + texto.substring(1);
     }
+
+    /**
+     * Actualiza los datos visibles del calendario
+     * Refresca los combobox de tutores y estudiantes, vuelve a filtrar las reservas
+     * y recarga la tabla de la semana actual
+     */
+    public void actualizarCalendario() {
+        actualizarCombos();
+
+        if (calendarioGeneral) {
+            buscarTodasReservas();
+        } else if (filtrandoPorTutor) {
+            buscarReservasTutores();
+        } else {
+            buscarReservasEstudiantes();
+        }
+
+        cargarSemana();
+    }
+
+    /**
+     * Actualiza los combobox de tutores y estudiantes con los datos actuales
+     * registrados en el controlador
+     */
+    private void actualizarCombos() {
+        Object tutorSeleccionado = comboBoxTutores.getSelectedItem();
+        Object estudianteSeleccionado = comboBoxEstudiantes.getSelectedItem();
+
+        comboBoxTutores.removeAllItems();
+        for (Tutor tutor : controladorSistema.getTutores()) {
+            comboBoxTutores.addItem(tutor.toString());
+        }
+
+        comboBoxEstudiantes.removeAllItems();
+        for (Estudiante estudiante : controladorSistema.getEstudiantes()) {
+            comboBoxEstudiantes.addItem(estudiante.toString());
+        }
+
+        if (tutorSeleccionado != null) {
+            comboBoxTutores.setSelectedItem(tutorSeleccionado);
+        }
+
+        if (estudianteSeleccionado != null) {
+            comboBoxEstudiantes.setSelectedItem(estudianteSeleccionado);
+        }
+    }
 }

@@ -6,3 +6,4 @@
 505;Fernanda Torres;ftorres@udec.cl;966666666
 506;Nicolas Reyes;nreyes@udec.cl;977777777
 507;Isidora Fuentes;ifuentes@udec.cl;988888888
+508;Alan Flores;alanxd@udec.cl;990945667

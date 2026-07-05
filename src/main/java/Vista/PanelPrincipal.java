@@ -15,6 +15,7 @@ public class PanelPrincipal extends JPanel {
     private SistemaReservasControlador controlador;
     private CardLayout cardLayout;
     private JPanel panelContenido;
+    private PanelCalendario panelCalendario;
 
     /**
      * Constructor del panel principal, crea el controlador principal del sistema, inicializa el menu lateral
@@ -33,10 +34,11 @@ public class PanelPrincipal extends JPanel {
 
         // por ahora se añaden paneles temporales con el texto descriptivo "> panel --- que iria aca <"
         panelContenido.add(new PanelInicio(), PanelSistema.INICIO.getIdPanel());
-        panelContenido.add(new PanelTutores(), PanelSistema.TUTORES.getIdPanel());
-        panelContenido.add(new PanelEstudiantes(), PanelSistema.ESTUDIANTES.getIdPanel());
+        panelContenido.add(new PanelTutores(controlador), PanelSistema.TUTORES.getIdPanel());
+        panelContenido.add(new PanelEstudiantes(controlador), PanelSistema.ESTUDIANTES.getIdPanel());
         panelContenido.add(new PanelReservas(controlador), PanelSistema.RESERVAS.getIdPanel());
-        panelContenido.add(new PanelCalendario(controlador), PanelSistema.CALENDARIO.getIdPanel());
+        panelCalendario = new PanelCalendario(controlador);
+        panelContenido.add(panelCalendario, PanelSistema.CALENDARIO.getIdPanel());
 
         add(panelMenu, BorderLayout.WEST);
         add(panelContenido, BorderLayout.CENTER);
@@ -47,10 +49,13 @@ public class PanelPrincipal extends JPanel {
     /**
      * Metodo que cambia el panel visible dentro del CardLayout
      * Recibe el nombre identificador del panel directo de la enumeracion PanelSistema
-     * y con ello solicita a CardLayout que muestre el panel correspondiente.
+     * y con eso solicita a CardLayout que muestre el panel correspondiente
      * @param panelSistema panel del sistema que se desea mostrar en pantalla
      */
     public void mostrarPanel(PanelSistema panelSistema) {
+        if (panelSistema == PanelSistema.CALENDARIO) {
+            panelCalendario.actualizarCalendario();
+        }
         cardLayout.show(panelContenido, panelSistema.getIdPanel());
     }
 
