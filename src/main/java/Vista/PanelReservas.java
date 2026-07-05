@@ -38,6 +38,7 @@ public class PanelReservas extends JPanel {
     private JTable tablaReservas;
     private JButton botonConfirmar;
     private JButton botonCancelar;
+    private JButton botonModificar;
 
     /**
      * Constructor de panelReservas.
@@ -71,7 +72,7 @@ public class PanelReservas extends JPanel {
      *
      * @return panel con el titulo del modulo.
      */
-    private JPanel panelTitulo(){
+    private JPanel panelTitulo() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel titulo = new JLabel("Reservas:");
 
@@ -90,16 +91,16 @@ public class PanelReservas extends JPanel {
      *
      * @return panel con el formulario de creacion de reservas.
      */
-    private JPanel panelFormulario(){
+    private JPanel panelFormulario() {
         JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
 
         panel.setPreferredSize(new Dimension(270, 0));
         panel.setBorder(BorderFactory.createTitledBorder("Nueva reserva"));
 
-        txtMateria    = new JTextField();
-        txtFecha      = new JTextField();
+        txtMateria = new JTextField();
+        txtFecha = new JTextField();
         txtHoraInicio = new JTextField();
-        txtHoraFin    = new JTextField();
+        txtHoraFin = new JTextField();
 
         botonBuscarTutores = new JButton("Buscar tutores disponibles");
         comboBoxEstudiantes = new JComboBox<>();
@@ -137,6 +138,7 @@ public class PanelReservas extends JPanel {
         botonCrearReserva.addActionListener(e -> crearReserva());
         botonConfirmar.addActionListener(e -> confirmarReserva());
         botonCancelar.addActionListener(e -> cancelarReserva());
+        botonModificar.addActionListener(e -> dialogoModificar());
     }
 
     /**
@@ -145,17 +147,17 @@ public class PanelReservas extends JPanel {
      * Si existen tutores compatibles, los carga en el combobox de seleccion junto con
      * los estudiantes registrados en el sistema.
      */
-    private void buscarTutoresDisponibles(){
+    private void buscarTutoresDisponibles() {
         String nombreMateria = txtMateria.getText().trim();
         if (nombreMateria.isBlank()) {
-            mostrarAviso("Ingrese el nombre de la materia.",1);
+            mostrarAviso("Ingrese el nombre de la materia.", 1);
             return;
         }
 
         try {
-            LocalDate fecha      = LocalDate.parse(txtFecha.getText().trim());
+            LocalDate fecha = LocalDate.parse(txtFecha.getText().trim());
             LocalTime horaInicio = LocalTime.parse(txtHoraInicio.getText().trim());
-            LocalTime horaFin    = LocalTime.parse(txtHoraFin.getText().trim());
+            LocalTime horaFin = LocalTime.parse(txtHoraFin.getText().trim());
 
             ArrayList<Tutor> disponibles = controladorSistema.buscarTutoresDisponibles(
                     nombreMateria, fecha, horaInicio, horaFin);
@@ -163,7 +165,7 @@ public class PanelReservas extends JPanel {
             comboBoxTutores.removeAllItems();
 
             if (disponibles.isEmpty()) {
-                mostrarAviso("No hay tutores disponibles para ese horario y materia.",-1);
+                mostrarAviso("No hay tutores disponibles para ese horario y materia.", -1);
                 return;
             }
 
@@ -173,8 +175,8 @@ public class PanelReservas extends JPanel {
 
             cargarEstudiantes();
 
-        } catch (DateTimeParseException ex){
-            mostrarAviso("Formato incorrecto.\nFecha: AAAA-MM-DD  Hora: HH:MM",2);
+        } catch (DateTimeParseException ex) {
+            mostrarAviso("Formato incorrecto.\nFecha: AAAA-MM-DD  Hora: HH:MM", 2);
         }
 
     }
@@ -185,14 +187,16 @@ public class PanelReservas extends JPanel {
      *
      * @return panel que contiene la tabla de reservas y sus acciones.
      */
-    private JPanel panelTabla(){
-        JPanel panel = new JPanel(new BorderLayout(0,9));
+    private JPanel panelTabla() {
+        JPanel panel = new JPanel(new BorderLayout(0, 9));
         panel.setBorder(BorderFactory.createTitledBorder("Reservas registradas"));
 
-        String[] columnas = {"#", "Tutor", "Tarifa","Estudiante", "Materia", "Fecha", "Inicio", "Fin", "Estado"};
+        String[] columnas = {"#", "Tutor", "Tarifa", "Estudiante", "Materia", "Fecha", "Inicio", "Fin", "Estado"};
         modeloTabla = new DefaultTableModel(columnas, 0) {
             @Override
-            public boolean isCellEditable(int fila, int col) { return false; }
+            public boolean isCellEditable(int fila, int col) {
+                return false;
+            }
         };
 
         tablaReservas = new JTable(modeloTabla);
@@ -209,7 +213,9 @@ public class PanelReservas extends JPanel {
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         botonConfirmar = new JButton("Confirmar");
         botonCancelar = new JButton("Cancelar");
+        botonModificar = new JButton("Modificar");
 
+        panelBotones.add(botonModificar);
         panelBotones.add(botonConfirmar);
         panelBotones.add(botonCancelar);
 
@@ -250,9 +256,9 @@ public class PanelReservas extends JPanel {
      * Solicita confirmacion al usuario antes de realizar la operacion y
      * actualiza la tabla una vez confirmada.
      */
-    private void confirmarReserva(){
+    private void confirmarReserva() {
         Reserva reserva = getReservaSeleccionada();
-        if (reserva == null){
+        if (reserva == null) {
             return;
         }
 
@@ -279,9 +285,9 @@ public class PanelReservas extends JPanel {
      * Solicita confirmacion al usuario antes de realizar la operacion y
      * actualiza la tabla una vez cancelada.
      */
-    private void cancelarReserva(){
+    private void cancelarReserva() {
         Reserva reserva = getReservaSeleccionada();
-        if (reserva == null){
+        if (reserva == null) {
             return;
         }
 
@@ -309,24 +315,24 @@ public class PanelReservas extends JPanel {
      * Valida la existencia del tutor, estudiante, materia y el formato de la
      * fecha y horario antes de solicitar la creacion al controlador.
      */
-    private void crearReserva(){
+    private void crearReserva() {
         Tutor tutor = (Tutor) comboBoxTutores.getSelectedItem();
         Estudiante estudiante = (Estudiante) comboBoxEstudiantes.getSelectedItem();
 
-        if ( tutor == null || estudiante == null){
+        if (tutor == null || estudiante == null) {
             mostrarAviso("Busque primero un tutor y seleccione un estudiante", 2);
             return;
         }
 
         try {
-            LocalDate fecha      = LocalDate.parse(txtFecha.getText().trim());
+            LocalDate fecha = LocalDate.parse(txtFecha.getText().trim());
             LocalTime horaInicio = LocalTime.parse(txtHoraInicio.getText().trim());
-            LocalTime horaFin    = LocalTime.parse(txtHoraFin.getText().trim());
+            LocalTime horaFin = LocalTime.parse(txtHoraFin.getText().trim());
             String nombreMateria = txtMateria.getText().trim();
 
             MateriaTutor materia = tutor.buscarMateria(nombreMateria);
             if (materia == null) {
-                mostrarAviso("El tutor seleccionado no imparte esa materia.",JOptionPane.ERROR_MESSAGE);
+                mostrarAviso("El tutor seleccionado no imparte esa materia.", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -336,13 +342,12 @@ public class PanelReservas extends JPanel {
             limpiarFormulario();
 
 
-
         } catch (DateTimeParseException ex) {
-            mostrarAviso("Formato incorrecto.\nFecha: AAAA-MM-DD   Hora: HH:MM",JOptionPane.ERROR_MESSAGE);
+            mostrarAviso("Formato incorrecto.\nFecha: AAAA-MM-DD   Hora: HH:MM", JOptionPane.ERROR_MESSAGE);
         } catch (ConflictoHorarioException ex) {
-            mostrarAviso("Existe un conflicto en el horario seleccionado",JOptionPane.ERROR_MESSAGE);
+            mostrarAviso("Existe un conflicto en el horario seleccionado", JOptionPane.ERROR_MESSAGE);
         } catch (CupoMaximoExcedidoException ex) {
-            mostrarAviso("No quedan mas cupos para la materia seleccionada",JOptionPane.ERROR_MESSAGE);
+            mostrarAviso("No quedan mas cupos para la materia seleccionada", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -385,6 +390,148 @@ public class PanelReservas extends JPanel {
         comboBoxEstudiantes.removeAllItems();
     }
 
+    /**
+     * Abre un dialogo con el formulario de modificacion de la reserva seleccionada.
+     * Los campos se prerellenan con los valores actuales.
+     * Permite cambiar tutor, estudiante, materia, fecha y horario.
+     */
+    private void dialogoModificar() {
+        Reserva reserva = getReservaSeleccionada();
+        if (reserva == null) return;
+
+        if (reserva.getEstadoReserva().equals("CANCELADA")) {
+            mostrarAviso("No se puede modificar una reserva cancelada.", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JDialog dialogo = new JDialog(
+                (Frame) SwingUtilities.getWindowAncestor(this),
+                "Modificar reserva", true);
+        dialogo.setLayout(new BorderLayout(10, 10));
+        dialogo.setSize(400, 500);
+        dialogo.setLocationRelativeTo(this);
+
+        JPanel formulario = new JPanel(new GridLayout(0, 1, 5, 5));
+        formulario.setBorder(BorderFactory.createEmptyBorder(15, 15, 5, 15));
+
+        JTextField modMateria = new JTextField(reserva.getMateriaTutor().getNombreMateria());
+        JTextField modFecha = new JTextField(reserva.getFecha().toString());
+        JTextField modHoraInicio = new JTextField(reserva.getHoraInicio().toString());
+        JTextField modHoraFin = new JTextField(reserva.getHoraFin().toString());
+        JComboBox<Tutor> modTutores = new JComboBox<>();
+        JComboBox<Estudiante> modEstudiantes = new JComboBox<>();
+        JButton botonBuscar = new JButton("Buscar tutores disponibles");
+
+        for (Estudiante e : controladorSistema.getEstudiantes()) {
+            modEstudiantes.addItem(e);
+            if (e.getId() == reserva.getEstudiante().getId()) {
+                modEstudiantes.setSelectedItem(e);
+            }
+        }
+
+        formulario.add(new JLabel("Materia:"));
+        formulario.add(modMateria);
+        formulario.add(new JLabel("Fecha (AAAA-MM-DD):"));
+        formulario.add(modFecha);
+        formulario.add(new JLabel("Hora inicio (HH:MM):"));
+        formulario.add(modHoraInicio);
+        formulario.add(new JLabel("Hora fin (HH:MM):"));
+        formulario.add(modHoraFin);
+        formulario.add(botonBuscar);
+        formulario.add(new JLabel("Tutor disponible:"));
+        formulario.add(modTutores);
+        formulario.add(new JLabel("Estudiante:"));
+        formulario.add(modEstudiantes);
+
+        precargarTutoresEnDialogo(modTutores, modMateria, modFecha,
+                modHoraInicio, modHoraFin, reserva.getTutor());
+
+        botonBuscar.addActionListener(e ->
+                precargarTutoresEnDialogo(modTutores, modMateria, modFecha,
+                        modHoraInicio, modHoraFin, null));
+
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 10));
+        JButton botonGuardar = new JButton("Guardar cambios");
+        JButton botonCancelarD = new JButton("Cancelar");
+        panelBotones.add(botonGuardar);
+        panelBotones.add(botonCancelarD);
+
+        botonCancelarD.addActionListener(e -> dialogo.dispose());
+
+        botonGuardar.addActionListener(e -> {
+            Tutor nuevoTutor = (Tutor) modTutores.getSelectedItem();
+            Estudiante nuevoEstudiante = (Estudiante) modEstudiantes.getSelectedItem();
+
+            if (nuevoTutor == null || nuevoEstudiante == null) {
+                mostrarAviso("Busque tutores disponibles antes de guardar.", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                LocalDate fecha = LocalDate.parse(modFecha.getText().trim());
+                LocalTime horaInicio = LocalTime.parse(modHoraInicio.getText().trim());
+                LocalTime horaFin = LocalTime.parse(modHoraFin.getText().trim());
+                String nombreMateria = modMateria.getText().trim();
+
+                controladorSistema.modificarReserva(reserva, nuevoTutor, nuevoEstudiante,
+                        nombreMateria, fecha, horaInicio, horaFin);
+
+                mostrarAviso("Reserva modificada correctamente.", JOptionPane.INFORMATION_MESSAGE);
+                actualizarTabla();
+                dialogo.dispose();
+
+            } catch (DateTimeParseException ex) {
+                mostrarAviso("Formato incorrecto.\nFecha: AAAA-MM-DD  Hora: HH:MM", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                mostrarAviso(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        dialogo.add(formulario, BorderLayout.CENTER);
+        dialogo.add(panelBotones, BorderLayout.SOUTH);
+        dialogo.setVisible(true);
+    }
+
+    /**
+     * Carga el dialogo de modificar con los datos de la reserva actual,
+     * intentando buscar tutores con los mismo requerimientos.
+     * @param comboboxTutores combobox donde se cargaran los tutores encontrados
+     * @param modMateria campo de texto con la materia
+     * @param modFecha campo de texto con la fecha
+     * @param modHoraInicio campo de texto con la hora de inicio
+     * @param modHoraFin campo de texto con la hora de fin
+     * @param tutorActual tutor a preseleccionar si esta disponible, null si no aplica
+     */
+    private void precargarTutoresEnDialogo(JComboBox<Tutor> comboboxTutores,
+                                           JTextField modMateria, JTextField modFecha,
+                                           JTextField modHoraInicio, JTextField modHoraFin,
+                                           Tutor tutorActual) {
+        try {
+            String materia = modMateria.getText().trim();
+            LocalDate fecha = LocalDate.parse(modFecha.getText().trim());
+            LocalTime inicio = LocalTime.parse(modHoraInicio.getText().trim());
+            LocalTime fin = LocalTime.parse(modHoraFin.getText().trim());
+
+            ArrayList<Tutor> disponibles = controladorSistema.buscarTutoresDisponibles(
+                    materia, fecha, inicio, fin);
+
+            comboboxTutores.removeAllItems();
+            if (disponibles.isEmpty()) {
+                mostrarAviso("No hay tutores disponibles para ese horario y materia.", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            for (Tutor t : disponibles) {
+                comboboxTutores.addItem(t);
+                if (tutorActual != null && t.getId() == tutorActual.getId()) {
+                    comboboxTutores.setSelectedItem(t);
+                }
+            }
+        } catch (DateTimeParseException ex) {
+            mostrarAviso("Formato incorrecto.\nFecha: AAAA-MM-DD  Hora: HH:MM", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            mostrarAviso(ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     /**
      * Muestra un cuadro de dialogo con un mensaje para informar al usuario.
