@@ -17,6 +17,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Locale;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Clase que representa el panel visual del calendario de reservas.
@@ -203,10 +205,18 @@ public class PanelCalendario extends JPanel {
     }
 
     /**
-     * Define la logica de los botones de navegacion y filtros.
+     * Inner Class encargada de responder al evento dado al clickear el boton Semana anterior.
+     * Al activarse retrocede una semana y recarga el calendario actual.
      */
-    private void cargarAcciones() {
-        botonSemanaAnterior.addActionListener(e -> {
+    private class EventoSemanaAnterior implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Semana anterior.
+         * Retrocede una semana y actualiza la vista segun el filtro activo.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
             lunesActual = lunesActual.minusWeeks(1);
 
             if (calendarioGeneral) {
@@ -218,9 +228,22 @@ public class PanelCalendario extends JPanel {
             }
 
             cargarSemana();
-        });
+        }
+    }
 
-        botonSemanaSiguiente.addActionListener(e -> {
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Semana siguiente.
+     * Al activarse avanza una semana y recarga el calendario actual.
+     */
+    private class EventoSemanaSiguiente implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Semana siguiente.
+         * Avanza una semana y actualiza la vista segun el filtro activo.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
             lunesActual = lunesActual.plusWeeks(1);
 
             if (calendarioGeneral) {
@@ -232,27 +255,77 @@ public class PanelCalendario extends JPanel {
             }
 
             cargarSemana();
-        });
+        }
+    }
 
-        botonVerTodas.addActionListener(e -> {
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Ver todas.
+     * Al activarse muestra el calendario general de reservas.
+     */
+    private class EventoVerTodas implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Ver todas.
+         * Desactiva los filtros y carga el calendario general.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
             calendarioGeneral = true;
             buscarTodasReservas();
             cargarSemana();
-        });
+        }
+    }
 
-        botonConfirmarTutor.addActionListener(e -> {
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Confirmar tutor.
+     * Al activarse filtra el calendario por el tutor seleccionado.
+     */
+    private class EventoConfirmarTutor implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Confirmar tutor.
+         * Activa el filtro por tutor y actualiza el calendario.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
             calendarioGeneral = false;
             filtrandoPorTutor = true;
             buscarReservasTutores();
             cargarSemana();
-        });
+        }
+    }
 
-        botonConfirmarEstudiante.addActionListener(e -> {
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Confirmar estudiante.
+     * Al activarse filtra el calendario por el estudiante seleccionado.
+     */
+    private class EventoConfirmarEstudiante implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Confirmar estudiante.
+         * Activa el filtro por estudiante y actualiza el calendario.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
             calendarioGeneral = false;
             filtrandoPorTutor = false;
             buscarReservasEstudiantes();
             cargarSemana();
-        });
+        }
+    }
+
+    /**
+     * Define la logica de los botones de navegacion y filtros.
+     */
+    private void cargarAcciones() {
+        botonSemanaAnterior.addActionListener(new EventoSemanaAnterior());
+        botonSemanaSiguiente.addActionListener(new EventoSemanaSiguiente());
+        botonVerTodas.addActionListener(new EventoVerTodas());
+        botonConfirmarTutor.addActionListener(new EventoConfirmarTutor());
+        botonConfirmarEstudiante.addActionListener(new EventoConfirmarEstudiante());
     }
 
     /**

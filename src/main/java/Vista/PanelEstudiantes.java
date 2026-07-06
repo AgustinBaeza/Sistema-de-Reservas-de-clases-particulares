@@ -5,6 +5,10 @@ import Logica.estudiante.Estudiante;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Panel visual encargado de gestionar estudiantes
@@ -66,10 +70,10 @@ public class PanelEstudiantes extends JPanel {
         JButton btnBuscar = new JButton("Buscar por ID");
         JButton btnLimpiar = new JButton("Limpiar");
 
-        btnAgregar.addActionListener(e -> agregarEstudiante());
-        btnEditar.addActionListener(e -> editarEstudiante());
-        btnBuscar.addActionListener(e -> buscarEstudiante());
-        btnLimpiar.addActionListener(e -> limpiarCampos());
+        btnAgregar.addActionListener(new EventoAgregarEstudiante());
+        btnEditar.addActionListener(new EventoEditarEstudiante());
+        btnBuscar.addActionListener(new EventoBuscarEstudiante());
+        btnLimpiar.addActionListener(new EventoLimpiarFormulario());
 
         botones.add(btnAgregar);
         botones.add(btnEditar);
@@ -80,6 +84,93 @@ public class PanelEstudiantes extends JPanel {
         panel.add(botones, BorderLayout.SOUTH);
 
         return panel;
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Agregar.
+     * Al activarse solicita agregar un estudiante con los datos ingresados.
+     */
+    private class EventoAgregarEstudiante implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Agregar.
+         * Ejecuta el proceso de creacion de estudiante.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            agregarEstudiante();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Editar.
+     * Al activarse solicita editar el estudiante seleccionado o buscado.
+     */
+    private class EventoEditarEstudiante implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Editar.
+         * Ejecuta el proceso de edicion de estudiante.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            editarEstudiante();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Buscar por ID.
+     * Al activarse solicita buscar un estudiante registrado mediante su ID.
+     */
+    private class EventoBuscarEstudiante implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Buscar por ID.
+         * Ejecuta la busqueda de estudiante por identificador.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            buscarEstudiante();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Limpiar.
+     * Al activarse limpia los campos del formulario de estudiantes.
+     */
+    private class EventoLimpiarFormulario implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Limpiar.
+         * Limpia los campos del formulario.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            limpiarCampos();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al seleccionar una fila de la tabla de estudiantes.
+     * Al activarse carga los datos del estudiante seleccionado en el formulario.
+     */
+    private class EventoSeleccionEstudiante implements ListSelectionListener {
+
+        /**
+         * Metodo llamado al cambiar la seleccion de la tabla de estudiantes.
+         * Carga los datos de la fila seleccionada en el formulario.
+         * @param e evento generado por la seleccion de la tabla
+         */
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                cargarDatosSeleccionados();
+            }
+        }
     }
 
     /**
@@ -99,11 +190,7 @@ public class PanelEstudiantes extends JPanel {
         tablaEstudiantes = new JTable(modeloTabla);
         tablaEstudiantes.setRowHeight(25);
         tablaEstudiantes.getTableHeader().setReorderingAllowed(false);
-        tablaEstudiantes.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                cargarDatosSeleccionados();
-            }
-        });
+        tablaEstudiantes.getSelectionModel().addListSelectionListener(new EventoSeleccionEstudiante());
         return new JScrollPane(tablaEstudiantes);
     }
 

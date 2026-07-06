@@ -9,6 +9,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Panel visual encargado de gestionar tutores
@@ -52,6 +56,216 @@ public class PanelTutores extends JPanel {
     }
 
     /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Agregar tutor.
+     * Al activarse solicita agregar un tutor con los datos ingresados.
+     */
+    private class EventoAgregarTutor implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Agregar tutor.
+         * Ejecuta el proceso de creacion de tutor.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            agregarTutor();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Editar tutor.
+     * Al activarse solicita editar el tutor seleccionado.
+     */
+    private class EventoEditarTutor implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Editar tutor.
+         * Ejecuta el proceso de edicion de tutor.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            editarTutor();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Limpiar.
+     * Al activarse limpia los campos principales del tutor.
+     */
+    private class EventoLimpiarTutor implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Limpiar.
+         * Limpia el formulario principal del tutor.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            limpiarCamposTutor();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al seleccionar una fila de la tabla de tutores.
+     * Al activarse carga los datos principales del tutor y sus materias/disponibilidades.
+     */
+    private class EventoSeleccionTutor implements ListSelectionListener {
+
+        /**
+         * Metodo llamado al cambiar la seleccion de la tabla de tutores.
+         * Carga los datos del tutor seleccionado.
+         * @param e evento generado por la seleccion de la tabla
+         */
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                cargarTutorSeleccionado();
+            }
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Agregar materia.
+     * Al activarse solicita agregar una materia al tutor seleccionado.
+     */
+    private class EventoAgregarMateria implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Agregar materia.
+         * Ejecuta el proceso de adicion de materia.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            agregarMateria();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Editar materia.
+     * Al activarse solicita editar la materia seleccionada.
+     */
+    private class EventoEditarMateria implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Editar materia.
+         * Ejecuta el proceso de edicion de materia.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            editarMateria();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Limpiar materia.
+     * Al activarse limpia los campos del formulario de materia.
+     */
+    private class EventoLimpiarMateria implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Limpiar materia.
+         * Limpia los campos asociados a la materia.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            limpiarCamposMateria();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al seleccionar una fila de la tabla de materias.
+     * Al activarse carga la materia seleccionada en el formulario.
+     */
+    private class EventoSeleccionMateria implements ListSelectionListener {
+
+        /**
+         * Metodo llamado al cambiar la seleccion de la tabla de materias.
+         * Carga los datos de la materia seleccionada.
+         * @param e evento generado por la seleccion de la tabla
+         */
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                cargarMateriaSeleccionada();
+            }
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Agregar disponibilidad.
+     * Al activarse solicita agregar una disponibilidad al tutor seleccionado.
+     */
+    private class EventoAgregarDisponibilidad implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Agregar disponibilidad.
+         * Ejecuta el proceso de adicion de disponibilidad.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            agregarDisponibilidad();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Editar disponibilidad.
+     * Al activarse solicita editar la disponibilidad seleccionada.
+     */
+    private class EventoEditarDisponibilidad implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Editar disponibilidad.
+         * Ejecuta el proceso de edicion de disponibilidad.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            editarDisponibilidad();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al clickear el boton Limpiar disponibilidad.
+     * Al activarse limpia los campos del formulario de disponibilidad.
+     */
+    private class EventoLimpiarDisponibilidad implements ActionListener {
+
+        /**
+         * Metodo llamado al presionar el boton Limpiar disponibilidad.
+         * Limpia los campos asociados a la disponibilidad.
+         * @param e evento generado por el boton
+         */
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            limpiarCamposDisponibilidad();
+        }
+    }
+
+    /**
+     * Inner Class encargada de responder al evento dado al seleccionar una fila de la tabla de disponibilidades.
+     * Al activarse carga la disponibilidad seleccionada en el formulario.
+     */
+    private class EventoSeleccionDisponibilidad implements ListSelectionListener {
+
+        /**
+         * Metodo llamado al cambiar la seleccion de la tabla de disponibilidades.
+         * Carga los datos de la disponibilidad seleccionada.
+         * @param e evento generado por la seleccion de la tabla
+         */
+        @Override
+        public void valueChanged(ListSelectionEvent e) {
+            if (!e.getValueIsAdjusting()) {
+                cargarDisponibilidadSeleccionada();
+            }
+        }
+    }
+
+    /**
      * Crea el formulario superior para crear o editar tutores
      * @return panel con campos y botones del tutor
      */
@@ -80,9 +294,9 @@ public class PanelTutores extends JPanel {
         JButton btnEditar = new JButton("Editar tutor");
         JButton btnLimpiar = new JButton("Limpiar");
 
-        btnAgregar.addActionListener(e -> agregarTutor());
-        btnEditar.addActionListener(e -> editarTutor());
-        btnLimpiar.addActionListener(e -> limpiarCamposTutor());
+        btnAgregar.addActionListener(new EventoAgregarTutor());
+        btnEditar.addActionListener(new EventoEditarTutor());
+        btnLimpiar.addActionListener(new EventoLimpiarTutor());
 
         botones.add(btnAgregar);
         botones.add(btnEditar);
@@ -111,11 +325,7 @@ public class PanelTutores extends JPanel {
         tablaTutores = new JTable(modeloTutores);
         tablaTutores.setRowHeight(25);
         tablaTutores.getTableHeader().setReorderingAllowed(false);
-        tablaTutores.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                cargarTutorSeleccionado();
-            }
-        });
+        tablaTutores.getSelectionModel().addListSelectionListener(new EventoSeleccionTutor());
 
         return new JScrollPane(tablaTutores);
     }
@@ -159,9 +369,9 @@ public class PanelTutores extends JPanel {
         JButton btnEditarMateria = new JButton("Editar materia");
         JButton btnLimpiarMateria = new JButton("Limpiar materia");
 
-        btnAgregarMateria.addActionListener(e -> agregarMateria());
-        btnEditarMateria.addActionListener(e -> editarMateria());
-        btnLimpiarMateria.addActionListener(e -> limpiarCamposMateria());
+        btnAgregarMateria.addActionListener(new EventoAgregarMateria());
+        btnEditarMateria.addActionListener(new EventoEditarMateria());
+        btnLimpiarMateria.addActionListener(new EventoLimpiarMateria());
 
         botones.add(btnAgregarMateria);
         botones.add(btnEditarMateria);
@@ -179,11 +389,7 @@ public class PanelTutores extends JPanel {
         tablaMaterias = new JTable(modeloMaterias);
         tablaMaterias.setRowHeight(25);
 
-        tablaMaterias.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                cargarMateriaSeleccionada();
-            }
-        });
+        tablaMaterias.getSelectionModel().addListSelectionListener(new EventoSeleccionMateria());
 
         JPanel formulario = new JPanel(new BorderLayout(10, 10));
         formulario.add(campos, BorderLayout.CENTER);
@@ -220,10 +426,9 @@ public class PanelTutores extends JPanel {
         JButton btnEditarDisponibilidad = new JButton("Editar disponibilidad");
         JButton btnLimpiarDisponibilidad = new JButton("Limpiar disponibilidad");
 
-        btnAgregarDisponibilidad.addActionListener(e -> agregarDisponibilidad());
-        btnEditarDisponibilidad.addActionListener(e -> editarDisponibilidad());
-        btnLimpiarDisponibilidad.addActionListener(e -> limpiarCamposDisponibilidad());
-
+        btnAgregarDisponibilidad.addActionListener(new EventoAgregarDisponibilidad());
+        btnEditarDisponibilidad.addActionListener(new EventoEditarDisponibilidad());
+        btnLimpiarDisponibilidad.addActionListener(new EventoLimpiarDisponibilidad());
         botones.add(btnAgregarDisponibilidad);
         botones.add(btnEditarDisponibilidad);
         botones.add(btnLimpiarDisponibilidad);
@@ -239,11 +444,7 @@ public class PanelTutores extends JPanel {
 
         tablaDisponibilidades = new JTable(modeloDisponibilidades);
         tablaDisponibilidades.setRowHeight(25);
-        tablaDisponibilidades.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                cargarDisponibilidadSeleccionada();
-            }
-        });
+        tablaDisponibilidades.getSelectionModel().addListSelectionListener(new EventoSeleccionDisponibilidad());
 
         JPanel formulario = new JPanel(new BorderLayout(10, 10));
         formulario.add(campos, BorderLayout.CENTER);
