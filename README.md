@@ -102,6 +102,12 @@ Modelo:
 - GestorReservas: Administra la creación, modificación, cancelación y consulta de reservas.
 
 - BuscadorDisponibilidad: Se encarga de validar disponibilidad, conflictos horarios y compatibilidad entre tutor, materia y horario.
+  
+- CargadoGuardadoTutor: Se encarga de guardar y cargar los tutores, junto con sus materias y disponibilidades, desde un archivo de texto.
+  
+- CargadoGuardadoEstudiante: Se encarga de guardar y cargar los estudiantes desde un archivo de texto.
+  
+- CargadoGuardadoReserva: Se encarga de guardar y cargar las reservas registradas, manteniendo también su estado.
 
 Vista:
 
