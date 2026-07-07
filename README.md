@@ -18,6 +18,8 @@ Este sistema está diseñado como una herramienta interna para que un administra
 
 ## Capturas de pantalla de la interfaz
 
+Se recomienda abrir el programa en pantalla completa debido a las limitaciones de Java Swing que provocan que se acople la interfaz en ventana normal
+
 ### Panel Principal
 
 ![Panel principal](PanelPrincipal.png)
