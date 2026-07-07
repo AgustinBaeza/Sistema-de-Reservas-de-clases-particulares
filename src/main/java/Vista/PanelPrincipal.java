@@ -31,8 +31,6 @@ public class PanelPrincipal extends JPanel {
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
 
-
-        // por ahora se añaden paneles temporales con el texto descriptivo "> panel --- que iria aca <"
         panelContenido.add(new PanelInicio(), PanelSistema.INICIO.getIdPanel());
         panelContenido.add(new PanelTutores(controlador), PanelSistema.TUTORES.getIdPanel());
         panelContenido.add(new PanelEstudiantes(controlador), PanelSistema.ESTUDIANTES.getIdPanel());
