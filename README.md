@@ -10,31 +10,33 @@
 
 Este sistema está diseñado como una herramienta interna para que un administrador gestione eficientemente las reservas de clases particulares o tutorías. El administrador podrá crear y mantener perfiles detallados de los tutores, incluyendo las materias que imparten, sus tarifas, la cantidad máxima de estudiante por materias y, sus bloques de horarios de disponibilidad. De igual forma, el administrador registrará y gestionará la información de los estudiantes que solicitan el servicio. Cuando se reciba una solicitud de clase el administrador utilizará el sistema para buscar horarios y tutores compatibles con las necesidades del estudiante. Una vez encontrada una opción adecuada, el administrador creará la reserva directamente en el sistema, asignando al estudiante con el tutor en el horario específico. El sistema deberá prevenir conflictos horarios y mantener un "calendario" de las clases programadas con vistas filtradas para cada tutor u estudiante.  Además, el administrador se encargará de procesar modificaciones o cancelaciones de clases.
 
+--- 
+
 ## Diagrama de casos de uso
 
-![Diagrama casos de uso](Diagrama de Casos de Uso.png)
+![Diagrama casos de uso](DiagramaCasosDeUso.png)
 
 ## Capturas de pantalla de la interfaz
 
 ### Panel Principal
 
-![Panel principal](Panel Principal.png)
+![Panel principal](PanelPrincipal.png)
 
 ### Panel de Tutores
 
-![Panel de tutores](Panel Tutores.png)
+![Panel de tutores](PanelTutores.png)
 
 ### Panel de Estudiantes
 
-![Panel de estudiantes](Panel Estudiantes.png)
+![Panel de estudiantes](PanelEstudiantes.png)
 
 ### Panel de Reservas
 
-![Panel de reservas](Panel Reservas.png)
+![Panel de reservas](PanelReservas.png)
 
 ### Panel de Calendario
 
-![Panel de calendario](Panel Calendario.png)
+![Panel de calendario](PanelCalendario.png)
 
 
 ## Diagrama de clases UML
@@ -83,6 +85,7 @@ Respecto a la arquitectura del sistema, se tomó la decisión de organizarlo sig
 
 La Vista está compuesta por los paneles gráficos del sistema, como PanelTutores, PanelEstudiantes, PanelReservas y PanelCalendario. El Controlador se implementa en SistemaReservasControlador, que valida las solicitudes recibidas desde la interfaz y las delega hacia las clases correspondientes de la lógica. Finalmente, el Modelo está compuesto por las clases encargadas de representar y gestionar tutores, estudiantes, reservas, materias, disponibilidades y estados de reserva.
 
+---
 
 ## Decisiones importantes tomadas durante el proyecto
 
@@ -120,6 +123,7 @@ Aunque el foco principal del proyecto era la lógica de reservas y la interfaz g
 
 El guardado se realiza después de operaciones importantes como crear, editar, confirmar, cancelar o modificar reservas, además de la carga inicial al iniciar el sistema.
 
+---
 
 ## Problemas identificados y autocrítica
 
@@ -132,7 +136,6 @@ Uno de los problemas más relevantes fue definir correctamente qué significaba 
 ### Manejo de conflictos horarios
 
 Otro problema importante fue evitar conflictos de horario sin generar falsos positivos. En particular, al modificar una reserva existente, el sistema podía detectar como conflicto la misma reserva que se estaba editando. Para resolver esto, se ajustó la lógica de modificación de reservas para evitar que la reserva actual fuese considerada como un choque consigo misma.
-
 
 ### Coordinación y regularidad del trabajo
 
