@@ -43,6 +43,7 @@ Se recomienda abrir el programa en pantalla completa debido a las limitaciones d
 
 ## Diagrama de clases UML
 
+![Diagrama UML](DiagramaUML.png)
 ---
 
 ## Patrones de diseño implementados
