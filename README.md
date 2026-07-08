@@ -156,6 +156,10 @@ Para esto se utilizó BuscadorDisponibilidad, encargado de verificar si un tutor
 
 Esto permite que la creación y modificación de reservas no dependan solo de la interfaz gráfica, sino de una validación centralizada en la lógica del programa. De esta forma, aunque el usuario intente crear o modificar una reserva con datos incorrectos, el sistema valida nuevamente antes de aceptar la operación.
 
+### Filtro de calendarios
+
+Se decidio que el calendario mostraria unicamente las reservas pendientes y las ya confirmadas, no haria muestra de las reservas canceladas para no saturarlo de información.
+
 ### Uso de CardLayout en la interfaz gráfica
 
 Para la interfaz gráfica se evaluó inicialmente trabajar con múltiples ventanas, pero se descartó esta opción porque habría hecho la navegación más incómoda y desordenada. En su lugar, se implementó una ventana principal con un menú lateral y cambio de paneles mediante CardLayout.
